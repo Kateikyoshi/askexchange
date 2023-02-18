@@ -1,0 +1,608 @@
+openapi: 3.0.4
+info:
+  title: AskExchange
+  description: This is where we post questions and get answers
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: question
+    description: 'A question to be discussed'
+  - name: answer
+    description: 'An answer to a question'
+paths:
+  /question/create:
+    post:
+      tags:
+        - question
+      summary: Create a question
+      operationId: questionCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionCreateResponse'
+  /question/delete:
+    post:
+      tags:
+        - question
+      summary: Delete a question
+      operationId: questionDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionDeleteResponse'
+  /question/update:
+    post:
+      tags:
+        - question
+      summary: Update a question
+      operationId: questionUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionUpdateResponse'
+  /question/read:
+    post:
+      tags:
+        - question
+      summary: Read a question
+      operationId: questionRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionReadResponse'
+  /answer/create:
+    post:
+      tags:
+        - answer
+      summary: Create an answer
+      operationId: answerCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerCreateResponse'
+  /answer/delete:
+    post:
+      tags:
+        - answer
+      summary: Delete an answer
+      operationId: answerDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerDeleteResponse'
+  /answer/update:
+    post:
+      tags:
+        - answer
+      summary: Update an answer
+      operationId: answerUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerUpdateResponse'
+  /answer/read:
+    post:
+      tags:
+        - answer
+      summary: Read an answer
+      operationId: answerRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerReadResponse'
+
+components:
+  schemas:
+    IRequest:
+      allOf:
+        - $ref: '#/components/schemas/RequestDebug'
+        - type: object
+          description: 'An interface for all requests'
+          properties:
+            requestType:
+              type: string
+              description: 'This field exists to find out the request type'
+              example: create
+            debugId:
+             type: string
+             description: "Id used to identify a particular request for debug purposes"
+
+    IQuestionRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          description: 'An interface for question requests'
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/QuestionCreateRequest'
+          read: '#/components/schemas/QuestionReadRequest'
+          update: '#/components/schemas/QuestionUpdateRequest'
+          delete: '#/components/schemas/QuestionDeleteRequest'
+
+    QuestionCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionRequest'
+        - type: object
+          properties:
+            questionCreateObject:
+              $ref: '#/components/schemas/QuestionCreateObject'
+
+    QuestionCreateObject:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 'Username to tie question to'
+        question:
+          $ref: '#/components/schemas/Question'
+
+    Question:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 'Questions title'
+        body:
+          type: string
+          description: 'Questions text'
+
+    QuestionId:
+      type: string
+      description: 'Question ID'
+
+    User:
+      type: object
+      properties:
+        login:
+          type: string
+          description: 'Users login and name, required for question and answer CREATE operation'
+        password:
+          type: string
+          description: 'Users password'
+        email:
+          type: string
+          description: 'Users email'
+        expertise:
+          $ref: '#/components/schemas/Expertise'
+
+    UserId:
+      type: string
+      description: 'User ID'
+
+    Expertise:
+      type: string
+      description: 'Types of user expertise'
+      enum:
+        - frontend
+        - backend
+        - fullstack
+        - devops
+
+    #This block is dedicated to QuestionDeleteRequest==========================================
+    QuestionDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionRequest'
+        - type: object
+          properties:
+            questionDeleteObject:
+              $ref: '#/components/schemas/QuestionDeleteObject'
+
+    QuestionDeleteObject:
+      type: object
+      properties:
+        questionId:
+          $ref: '#/components/schemas/QuestionId'
+
+    #This block is dedicated to QuestionUpdateRequest==========================================
+
+    QuestionUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionRequest'
+        - type: object
+          properties:
+            questionUpdateObject:
+              $ref: '#/components/schemas/QuestionUpdateObject'
+
+    QuestionUpdateObject:
+      type: object
+      properties:
+        questionId:
+          $ref: '#/components/schemas/QuestionId'
+        question:
+          $ref: '#/components/schemas/Question'
+
+
+    #This block is dedicated to QuestionReadRequest==========================================
+
+    QuestionReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionRequest'
+        - type: object
+          properties:
+            questionReadObject:
+              $ref: '#/components/schemas/QuestionReadObject'
+
+    QuestionReadObject:
+      type: object
+      properties:
+        questionId:
+          $ref: '#/components/schemas/QuestionId'
+
+    #This block is dedicated to QuestionCreateResponse==========================================
+    IResponse:
+      type: object
+      description: 'An interface for all responses'
+      properties:
+        responseType:
+          type: string
+          description: 'This field exists to determine the response type'
+          example: create
+        debugId:
+          type: string
+          description: "Id used to identify a particular request for debug purposes"
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+
+    IQuestionResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          description: 'An interface for all question responses'
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/QuestionCreateResponse'
+          read: '#/components/schemas/QuestionReadResponse'
+          update: '#/components/schemas/QuestionUpdateResponse'
+          delete: '#/components/schemas/QuestionDeleteResponse'
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+    QuestionCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionResponse'
+        - $ref: '#/components/schemas/QuestionCreateResponseObject'
+
+    QuestionCreateResponseObject:
+      description: 'Returns in response to question creation'
+      properties:
+        questionId:
+          $ref: '#/components/schemas/QuestionId'
+
+    #This block is dedicated to QuestionDeleteResponse==========================================
+
+    QuestionDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionResponse'
+        - $ref: '#/components/schemas/QuestionDeleteResponseObject'
+
+    QuestionDeleteResponseObject:
+      description: 'Returns in response to question creation'
+      properties:
+        questionId:
+          $ref: '#/components/schemas/QuestionId'
+
+    #This block is dedicated to QuestionUpdateResponse==========================================
+
+    QuestionUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionResponse'
+        - $ref: '#/components/schemas/QuestionUpdateResponseObject'
+
+    QuestionUpdateResponseObject:
+      description: 'Returns in response to question creation'
+      properties:
+        questionId:
+          type: string
+
+    #This block is dedicated to QuestionReadResponse==========================================
+
+    QuestionReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IQuestionResponse'
+        - $ref: '#/components/schemas/QuestionReadResponseObject'
+
+    QuestionReadResponseObject:
+      description: 'Returns in response to question creation'
+      properties:
+        question:
+          $ref: '#/components/schemas/Question'
+        answers:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    #This block is dedicated to AnswerCreateRequest==========================================
+    IAnswerRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          description: 'Interface for all answer requests'
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/AnswerCreateRequest'
+          read: '#/components/schemas/AnswerReadRequest'
+          update: '#/components/schemas/AnswerUpdateRequest'
+          delete: '#/components/schemas/AnswerDeleteRequest'
+
+    AnswerCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerRequest'
+        - type: object
+          properties:
+            answerCreateObject:
+              $ref: '#/components/schemas/AnswerCreateObject'
+
+    AnswerCreateObject:
+      type: object
+      properties:
+        userId:
+          $ref: '#/components/schemas/UserId'
+        questionId:
+          $ref: '#/components/schemas/QuestionId'
+        answer:
+          $ref: '#/components/schemas/Answer'
+
+    Answer:
+      type: object
+      properties:
+        body:
+          type: string
+          description: 'Answers text'
+        date:
+          type: string
+          format: date-time
+          description: 'Needed to sort answers in a thread, no need to provide it for creation'
+        likes:
+          type: integer
+          format: int32
+          description: 'Amount of likes answer has, no need to provide it for creation'
+
+    AnswerId:
+      type: string
+      description: 'id of an answer'
+
+    #This block is dedicated to AnswerDeleteRequest==========================================
+    AnswerDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerRequest'
+        - type: object
+          properties:
+            answerDeleteObject:
+              $ref: '#/components/schemas/AnswerDeleteObject'
+
+    AnswerDeleteObject:
+      type: object
+      properties:
+        answerId:
+          $ref: '#/components/schemas/AnswerId'
+
+    #This block is dedicated to AnswerUpdateRequest==========================================
+    AnswerUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerRequest'
+        - type: object
+          properties:
+            answerUpdateObject:
+              $ref: '#/components/schemas/AnswerUpdateObject'
+
+    AnswerUpdateObject:
+      type: object
+      properties:
+        answerId:
+          $ref: '#/components/schemas/AnswerId'
+        answer:
+          $ref: '#/components/schemas/Answer'
+
+    #This block is dedicated to AnswerReadRequest==========================================
+    AnswerReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerRequest'
+        - type: object
+          properties:
+            answerReadObject:
+              $ref: '#/components/schemas/AnswerReadObject'
+
+    AnswerReadObject:
+      type: object
+      properties:
+        answerId:
+          $ref: '#/components/schemas/AnswerId'
+
+    #This block is dedicated to AnswerCreateResponse==========================================
+    IAnswerResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          description: 'An interface for all responses'
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/AnswerCreateResponse'
+          read: '#/components/schemas/AnswerReadResponse'
+          update: '#/components/schemas/AnswerUpdateResponse'
+          delete: '#/components/schemas/AnswerDeleteResponse'
+
+    AnswerCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerResponse'
+        - $ref: '#/components/schemas/AnswerCreateResponseObject'
+
+    AnswerCreateResponseObject:
+      description: 'Returns in response to answer creation'
+      properties:
+        answerId:
+          $ref: '#/components/schemas/AnswerId'
+
+    #This block is dedicated to AnswerDeleteResponse==========================================
+    AnswerDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerResponse'
+        - $ref: '#/components/schemas/AnswerDeleteResponseObject'
+
+    AnswerDeleteResponseObject:
+      description: 'Returns in response to answer deletion'
+      properties:
+        answerId:
+          $ref: '#/components/schemas/AnswerId'
+
+    #This block is dedicated to AnswerUpdateResponse
+    AnswerUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerResponse'
+        - $ref: '#/components/schemas/AnswerCreateResponseObject'
+
+    AnswerUpdateResponseObject:
+      description: 'Returns in response to answer update'
+      properties:
+        answerId:
+          $ref: '#/components/schemas/AnswerId'
+
+    #This block is dedicated to AnswerReadResponse==========================================
+    AnswerReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IAnswerResponse'
+        - $ref: '#/components/schemas/AnswerReadResponseObject'
+
+    AnswerReadResponseObject:
+      description: 'Returns in response to answer read'
+      properties:
+        answer:
+          $ref: '#/components/schemas/Answer'
+
+    #Debug section==========================================================================
+
+    RequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/Debug'
+
+    Debug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/RequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/RequestDebugStubs'
+
+    RequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    RequestDebugStubs:
+      type: string
+      description: 'Stub enumeration'
+      enum:
+        - success
+        - notFound
+        - badId
+        - badTitle
+        - cannotDelete
