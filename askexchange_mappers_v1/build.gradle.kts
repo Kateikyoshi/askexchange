@@ -11,8 +11,8 @@ dependencies {
     val mockkVersion: String by project
 
     implementation(kotlin("stdlib"))
-    implementation(project(":askExchangeApi_v1"))
-    implementation(project(":askExchangeInnerModels_v1"))
+    implementation(project(":askexchange_api_v1"))
+    implementation(project(":askexchange_inner_models_v1"))
 
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")

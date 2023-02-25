@@ -12,7 +12,8 @@ pluginManagement {
     }
 }
 
-include("module1_nameless")
-include("askExchangeApi_v1")
-include("askExchangeMappers_v1")
-include("askExchangeInnerModels_v1")
+//include("module1_nameless")
+include("askexchange_api_v1")
+include("askexchange_mappers_v1")
+include("askexchange_inner_models_v1")
+findProject(":askexchange_api_v1:untitled")?.name = "untitled"

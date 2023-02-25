@@ -58,5 +58,7 @@ private fun List<InnerError>.toTransportErrors(): List<Error>? = this
 
 private fun InnerError.toTransportError() = Error(
     code = code.takeIf { it.isNotBlank() },
+    group = group.takeIf { it.isNotBlank() },
+    field = field.takeIf { it.isNotBlank() },
     message = message.takeIf { it.isNotBlank() }
 )
