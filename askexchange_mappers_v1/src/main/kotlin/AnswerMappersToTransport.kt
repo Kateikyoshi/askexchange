@@ -15,7 +15,7 @@ fun InnerAnswerContext.toTransport(): IAnswerResponse = when (val cmd = command)
     InnerCommand.NONE -> throw UnknownInnerCmd(cmd)
 }
 
-private fun InnerAnswerContext.toTransportCreate() = AnswerCreateResponse(
+fun InnerAnswerContext.toTransportCreate() = AnswerCreateResponse(
     responseType = "CREATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
@@ -23,7 +23,7 @@ private fun InnerAnswerContext.toTransportCreate() = AnswerCreateResponse(
     answerId = answerResponse.id.asString()
 )
 
-private fun InnerAnswerContext.toTransportDelete() = AnswerDeleteResponse(
+fun InnerAnswerContext.toTransportDelete() = AnswerDeleteResponse(
     responseType = "DELETE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
@@ -31,7 +31,7 @@ private fun InnerAnswerContext.toTransportDelete() = AnswerDeleteResponse(
     answerId = answerResponse.id.asString()
 )
 
-private fun InnerAnswerContext.toTransportUpdate() = AnswerUpdateResponse(
+fun InnerAnswerContext.toTransportUpdate() = AnswerUpdateResponse(
     responseType = "UPDATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
@@ -39,7 +39,7 @@ private fun InnerAnswerContext.toTransportUpdate() = AnswerUpdateResponse(
     answerId = answerResponse.id.asString()
 )
 
-private fun InnerAnswerContext.toTransportRead() = AnswerReadResponse(
+fun InnerAnswerContext.toTransportRead() = AnswerReadResponse(
     responseType = "READ",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,

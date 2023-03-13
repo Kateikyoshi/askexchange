@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":askexchange_mappers_v1"))
     implementation(project(":askexchange_api_v1"))
     implementation(project(":askexchange_inner_models_v1"))
+    implementation(project(mapOf("path" to ":askexchange_stubs")))
 
     //stubs
     //implementation(project(":askexchange_stubs"))
