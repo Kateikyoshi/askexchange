@@ -9,8 +9,9 @@ plugins {
 
     id("io.ktor.plugin")
 
-    id("com.bmuschko.docker-java-application")
-    id("com.bmuschko.docker-remote-api")
+//turns out there is a native ktor plugin for docker, so this can be left out for now
+//    id("com.bmuschko.docker-java-application")
+//    id("com.bmuschko.docker-remote-api")
 }
 
 group = "ru.shirnin.askexchange"
@@ -26,6 +27,21 @@ repositories {
     mavenCentral()
 }
 
+ktor {
+    docker {
+        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+        localImageName.set("bellsoft/liberica-openjdk-alpine")
+        imageTag.set("17")
+        portMappings.set(listOf(
+            io.ktor.plugin.features.DockerPortMapping(
+                80,
+                8080,
+                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+            )
+        ))
+    }
+}
+
 tasks {
 
     //otherwise there will be an error when running Kotest tests
@@ -33,24 +49,24 @@ tasks {
         useJUnitPlatform()
     }
 
-    val dockerJvmDockerfile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class) {
-        group = "docker"
-        from("bellsoft/liberica-openjdk-alpine:17")
-        copyFile("ktor.jar", "app/ktor.jar")
-        exposePort(8080)
-        entryPoint("java", "-Xms256m", "-Xmx512m", "-jar", "app/ktor.jar")
-    }
-    create("dockerBuildJvmImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class) {
-        group = "docker"
-        dependsOn(dockerJvmDockerfile, named("build"))
-        doFirst {
-            copy {
-                from("${project.buildDir}/libs/askexchange_app_ktor-0.0.1.jar")
-                into("${project.buildDir}/docker/ktor.jar")
-            }
-        }
-        images.add("${project.name}:${project.version}")
-    }
+//    val dockerJvmDockerfile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class) {
+//        group = "docker"
+//        from("bellsoft/liberica-openjdk-alpine:17")
+//        copyFile("ktor.jar", "app/ktor.jar")
+//        exposePort(8080)
+//        entryPoint("java", "-Xms256m", "-Xmx512m", "-jar", "app/ktor.jar")
+//    }
+//    create("dockerBuildJvmImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class) {
+//        group = "docker"
+//        dependsOn(dockerJvmDockerfile, named("build"))
+//        doFirst {
+//            copy {
+//                from("${project.buildDir}/libs/askexchange_app_ktor-0.0.1.jar")
+//                into("${project.buildDir}/docker/ktor.jar")
+//            }
+//        }
+//        images.add("${project.name}:${project.version}")
+//    }
 }
 
 dependencies {
