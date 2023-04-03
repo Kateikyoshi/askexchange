@@ -1,8 +1,8 @@
-import models.InnerWorkMode
+import ru.shirnin.askexchange.inner.models.InnerWorkMode
 import ru.shirnin.askexchange.api.v1.models.Debug
 import ru.shirnin.askexchange.api.v1.models.RequestDebugMode
 import ru.shirnin.askexchange.api.v1.models.RequestDebugStubs
-import stubs.InnerStubs
+import ru.shirnin.askexchange.inner.models.stubs.InnerStubs
 
 fun Debug.transportToWorkMode(): InnerWorkMode = when (this.mode) {
     RequestDebugMode.PROD -> InnerWorkMode.PROD

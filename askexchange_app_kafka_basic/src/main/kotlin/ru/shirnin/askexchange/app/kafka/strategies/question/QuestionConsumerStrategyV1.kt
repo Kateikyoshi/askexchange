@@ -1,6 +1,6 @@
 package ru.shirnin.askexchange.app.kafka.strategies.question
 
-import InnerQuestionContext
+import ru.shirnin.askexchange.inner.models.InnerQuestionContext
 import apiV1QuestionRequestDeserialize
 import apiV1QuestionResponseSerialize
 import fromTransport

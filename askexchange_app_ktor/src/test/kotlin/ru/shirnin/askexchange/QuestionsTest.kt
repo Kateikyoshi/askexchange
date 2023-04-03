@@ -11,6 +11,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.shirnin.askexchange.api.v1.models.*
+import ru.shirnin.askexchange.app.module
 
 class QuestionsTest : FunSpec({
     test("question create") {
@@ -92,7 +93,7 @@ class QuestionsTest : FunSpec({
             println(responseObj)
 
             response.status.value shouldBe 200
-            responseObj.questionId shouldBe "1"
+            responseObj.questionId shouldBe "999"
         }
     }
 })
