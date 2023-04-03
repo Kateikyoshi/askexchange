@@ -25,3 +25,4 @@ include("askexchange_inner_models_v1")
 include("askexchange_app_ktor")
 findProject(":askexchange_api_v1:untitled")?.name = "untitled"
 include("askexchange_stubs")
+include("askexchange_app_kafka_basic")
