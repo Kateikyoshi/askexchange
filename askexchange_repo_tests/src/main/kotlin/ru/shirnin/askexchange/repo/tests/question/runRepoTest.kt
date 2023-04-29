@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange.repo.tests
+package ru.shirnin.askexchange.repo.tests.question
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange.repo.tests
+package ru.shirnin.askexchange.repo.tests.question
 
 import io.kotest.core.spec.style.funSpec
 import io.kotest.matchers.shouldBe
@@ -7,32 +7,6 @@ import ru.shirnin.askexchange.inner.models.InnerId
 import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.repo.question.DbQuestionRequest
 import ru.shirnin.askexchange.repo.question.QuestionRepository
-
-
-//fun sumTests(calc: SumOp) = funSpec {
-//    test("Sum 2 and 2 should be 4") {
-//        calc.sum(2, 2) shouldBe 4
-//    }
-//}
-//
-//fun subtractionTests(calc: SubtractionOp) = funSpec {
-//    test("4 minus 2 should be 2") {
-//        calc.subtract(4, 2) shouldBe 2
-//    }
-//}
-//
-//class SumCalculatorTest : FunSpec({
-//    include(sumTests(SumCalculator))
-//})
-//
-//class SubtractionCalculatorTest : FunSpec({
-//    include(subtractionTests(SubtractionCalculator))
-//})
-//
-//class CompleteCalculatorTest : FunSpec({
-//    include(sumTests(CompleteCalculator))
-//    include(subtractionTests(CompleteCalculator))
-//})
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun createSuccess(repo: QuestionRepository) = funSpec {

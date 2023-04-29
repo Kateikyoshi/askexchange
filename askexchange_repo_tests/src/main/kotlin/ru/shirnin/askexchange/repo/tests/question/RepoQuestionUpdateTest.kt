@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange.repo.tests
+package ru.shirnin.askexchange.repo.tests.question
 
 import io.kotest.core.spec.style.funSpec
 import io.kotest.matchers.shouldBe

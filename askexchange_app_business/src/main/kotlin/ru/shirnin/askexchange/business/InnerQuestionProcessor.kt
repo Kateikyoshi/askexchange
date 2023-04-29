@@ -1,11 +1,11 @@
 package ru.shirnin.askexchange.business
 
-import ru.shirnin.askexchange.business.general.prepareResult
+import ru.shirnin.askexchange.business.general.question.prepareResult
 import ru.shirnin.askexchange.inner.models.InnerQuestionContext
 import ru.shirnin.askexchange.inner.models.InnerCommand
 import ru.shirnin.askexchange.business.models.question.operation
 import ru.shirnin.askexchange.business.models.question.stubs
-import ru.shirnin.askexchange.business.repo.initRepo
+import ru.shirnin.askexchange.business.repo.question.initRepo
 import ru.shirnin.askexchange.business.repo.question.*
 import ru.shirnin.askexchange.business.validation.question.*
 import ru.shirnin.askexchange.business.workers.question.*
@@ -23,6 +23,7 @@ class InnerQuestionProcessor {
             initStatus("Status initialization")
             initRepo("Repo initialization")
 
+            //CREATE
             operation("Question creation", InnerCommand.CREATE) {
                 stubs("Processing stubs") {
                     stubCreateSuccess("Imitating processing success")
@@ -46,6 +47,8 @@ class InnerQuestionProcessor {
                 }
                 prepareResult("Preparing a reply")
             }
+
+            //READ
             operation("Get a question", InnerCommand.READ) {
                 stubs("Processing stubs") {
                     stubReadSuccess("Imitating processing success")
@@ -70,6 +73,8 @@ class InnerQuestionProcessor {
                 }
                 prepareResult("Preparing a reply")
             }
+
+            //UPDATE
             operation("Change a question", InnerCommand.UPDATE) {
                 stubs("Processing stubs") {
                     stubUpdateSuccess("Imitating processing success")
@@ -94,6 +99,8 @@ class InnerQuestionProcessor {
                 }
                 prepareResult("Preparing a reply")
             }
+
+            //DELETE
             operation("Delete a question", InnerCommand.DELETE) {
                 stubs("Processing stubs") {
                     stubDeleteSuccess("Imitating processing success")

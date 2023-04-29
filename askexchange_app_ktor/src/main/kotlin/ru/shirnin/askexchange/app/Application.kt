@@ -31,9 +31,9 @@ fun Application.module(appSettings: AskAppSettings = initAppSettings()) {
 fun Application.initAppSettings(): AskAppSettings {
     val chainSettings = InnerChainSettings(
         loggerProvider = getLoggerProviderConf(),
-        repoTest = QuestionRepoInMemory(),
-        repoStub = QuestionRepoInMemory(),
-        repoProd = QuestionRepositoryStub()
+        questionRepoTest = QuestionRepoInMemory(),
+        questionRepoStub = QuestionRepoInMemory(),
+        questionRepoProd = QuestionRepositoryStub()
     )
 
     return AskAppSettings(

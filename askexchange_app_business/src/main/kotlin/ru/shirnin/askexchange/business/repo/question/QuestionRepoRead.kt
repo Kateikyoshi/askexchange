@@ -8,7 +8,7 @@ import ru.shirnin.askexchange.repo.question.DbQuestionIdRequest
 
 fun MultipleCommandBuilder<InnerQuestionContext>.repoRead(title: String) = worker {
     this.title = title
-    description = "Чтение объявления из БД"
+    description = "Reading Question from DB"
     isContextHealthy { state == InnerState.RUNNING }
     handle {
         val request = DbQuestionIdRequest(questionValidated)

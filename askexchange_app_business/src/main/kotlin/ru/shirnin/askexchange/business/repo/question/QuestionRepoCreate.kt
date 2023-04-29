@@ -14,9 +14,9 @@ fun MultipleCommandBuilder<InnerQuestionContext>.repoCreate(title: String) = wor
     handle {
         val request = DbQuestionRequest(questionRepoPrepare)
         val result = questionRepo.createQuestion(request)
-        val resultAd = result.data
-        if (result.isSuccess && resultAd != null) {
-            questionRepoDone = resultAd
+        val resultQuestion = result.data
+        if (result.isSuccess && resultQuestion != null) {
+            questionRepoDone = resultQuestion
         } else {
             state = InnerState.FAILED
             errors.addAll(result.errors)

@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange.business.repo
+package ru.shirnin.askexchange.business.repo.question
 
 import ru.shirnin.askexchange.chain.dsl.MultipleCommandBuilder
 import ru.shirnin.askexchange.chain.dsl.worker
@@ -15,9 +15,9 @@ fun MultipleCommandBuilder<InnerQuestionContext>.initRepo(title: String) = worke
     """.trimIndent()
     handle {
         questionRepo = when (workMode) {
-            InnerWorkMode.TEST -> settings.repoTest
-            InnerWorkMode.STUB -> settings.repoStub
-            else -> settings.repoProd
+            InnerWorkMode.TEST -> settings.questionRepoTest
+            InnerWorkMode.STUB -> settings.questionRepoStub
+            else -> settings.questionRepoProd
         }
         if (workMode != InnerWorkMode.STUB && questionRepo == QuestionRepository.NONE) fail(
             errorAdministration(

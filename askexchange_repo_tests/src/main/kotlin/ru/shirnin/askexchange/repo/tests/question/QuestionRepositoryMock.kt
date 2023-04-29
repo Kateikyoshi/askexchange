@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange.repo.tests
+package ru.shirnin.askexchange.repo.tests.question
 
 import ru.shirnin.askexchange.repo.question.DbQuestionIdRequest
 import ru.shirnin.askexchange.repo.question.DbQuestionRequest
