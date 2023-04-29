@@ -6,5 +6,6 @@ enum class InnerStubs {
     NOT_FOUND,
     BAD_ID,
     BAD_TITLE,
-    CANNOT_DELETE
+    CANNOT_DELETE,
+    DB_ERROR
 }

@@ -1,14 +1,19 @@
 package ru.shirnin.askexchange.business
 
+import ru.shirnin.askexchange.business.general.prepareResult
 import ru.shirnin.askexchange.inner.models.InnerQuestionContext
 import ru.shirnin.askexchange.inner.models.InnerCommand
 import ru.shirnin.askexchange.business.models.question.operation
 import ru.shirnin.askexchange.business.models.question.stubs
+import ru.shirnin.askexchange.business.repo.initRepo
+import ru.shirnin.askexchange.business.repo.question.*
 import ru.shirnin.askexchange.business.validation.question.*
 import ru.shirnin.askexchange.business.workers.question.*
+import ru.shirnin.askexchange.chain.dsl.chain
 import ru.shirnin.askexchange.chain.dsl.rootChain
 import ru.shirnin.askexchange.chain.dsl.worker
 import ru.shirnin.askexchange.inner.models.InnerId
+import ru.shirnin.askexchange.inner.models.InnerState
 
 class InnerQuestionProcessor {
     suspend fun exec(ctx: InnerQuestionContext) = BusinessChain.execute(ctx)
@@ -16,12 +21,14 @@ class InnerQuestionProcessor {
     companion object {
         private val BusinessChain = rootChain {
             initStatus("Status initialization")
+            initRepo("Repo initialization")
 
             operation("Question creation", InnerCommand.CREATE) {
                 stubs("Processing stubs") {
                     stubCreateSuccess("Imitating processing success")
                     stubValidationBadTitle("Imitating title validation error")
                     stubNoCase("Error: this stub is not allowed. Check your privilege")
+                    stubDbError("Imitating DB error")
                 }
                 validation {
                     worker("Copying request") { questionValidating = questionRequest.deepCopy() }
@@ -32,6 +39,12 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chain {
+                    title = "Persistence logic"
+                    repoPrepareCreate("Preparing object for saving")
+                    repoCreate("Creating a Question in a DB")
+                }
+                prepareResult("Preparing a reply")
             }
             operation("Get a question", InnerCommand.READ) {
                 stubs("Processing stubs") {
@@ -46,6 +59,16 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chain {
+                    title = "Reading logic"
+                    repoRead("Reading Question from DB")
+                    worker {
+                        title = "Preparing answer for Read"
+                        isContextHealthy { state == InnerState.RUNNING }
+                        handle { questionRepoDone = questionFetchedFromRepo }
+                    }
+                }
+                prepareResult("Preparing a reply")
             }
             operation("Change a question", InnerCommand.UPDATE) {
                 stubs("Processing stubs") {
@@ -63,6 +86,13 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chain {
+                    title = "Update logic"
+                    repoRead("Reading Question from DB")
+                    repoPrepareUpdate("Preparing object for an Update")
+                    repoUpdate("Updating object in DB")
+                }
+                prepareResult("Preparing a reply")
             }
             operation("Delete a question", InnerCommand.DELETE) {
                 stubs("Processing stubs") {
@@ -77,6 +107,13 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chain {
+                    title = "Deletion logic"
+                    repoRead("Reading Question from DB")
+                    repoPrepareDelete("Preparing object for Delete")
+                    repoDelete("Deleting object from DB")
+                }
+                prepareResult("Preparing a reply")
             }
         }.build()
     }

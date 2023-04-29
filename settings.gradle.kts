@@ -30,3 +30,7 @@ include("askexchange_stubs")
 include("askexchange_app_kafka_basic")
 include("askexchange_logging_common")
 include("askexchange_logging_logback")
+
+include("askexchange_repo_in_memory")
+include("askexchange_repo_tests")
+include("askexchange_repo_stubs")

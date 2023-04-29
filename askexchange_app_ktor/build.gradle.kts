@@ -110,12 +110,16 @@ dependencies {
     implementation(project(":askexchange_lib_chain_of_resp"))
     implementation(project(":askexchange_app_business"))
 
+    implementation(project(":askexchange_repo_in_memory"))
+    implementation(project(":askexchange_repo_stubs"))
+
     //stubs
     implementation(project(":askexchange_stubs"))
 
     //tests
     val kotestVersion: String by project
     val mockkVersion: String by project
+    testImplementation(project(":askexchange_repo_tests"))
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")

@@ -39,12 +39,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     //transport models
-    implementation(project(":askexchange_mappers_v1"))
-    implementation(project(":askexchange_api_v1"))
-    implementation(project(":askexchange_common"))
 
     //stubs
-    implementation(project(":askexchange_stubs"))
 
     //tests
     val kotestVersion: String by project

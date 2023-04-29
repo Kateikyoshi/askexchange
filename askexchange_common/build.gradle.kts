@@ -10,5 +10,8 @@ dependencies {
 
     implementation(kotlin("stdlib"))
 
+    //api(project(":ok-marketplace-lib-logging-common"))
+    api(project(":askexchange_logging_common"))
+
     api("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
 }

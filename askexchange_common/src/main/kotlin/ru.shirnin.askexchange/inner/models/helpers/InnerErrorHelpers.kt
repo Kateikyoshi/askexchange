@@ -47,3 +47,20 @@ fun errorValidation(
     message = "Validation error for field $field: $description",
     level = level,
 )
+
+fun errorAdministration(
+    /**
+     * Code describing an error. Shouldn't include field name or mention validation.
+     * Examples of correct use: empty, badSymbols, tooLong, etc
+     */
+    field: String = "",
+    violationCode: String,
+    description: String,
+    level: InnerError.Level = InnerError.Level.ERROR,
+) = InnerError(
+    field = field,
+    code = "administration-$violationCode",
+    group = "administration",
+    message = "Microservice management error: $description",
+    level = level,
+)
