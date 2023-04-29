@@ -18,11 +18,15 @@ pluginManagement {
     }
 }
 
-//include("module1_nameless")
 include("askexchange_api_v1")
+include("askexchange_app_business")
+include("askexchange_log_api_v1")
+include("askexchange_lib_chain_of_resp")
 include("askexchange_mappers_v1")
 include("askexchange_inner_models_v1")
 include("askexchange_app_ktor")
 findProject(":askexchange_api_v1:untitled")?.name = "untitled"
 include("askexchange_stubs")
 include("askexchange_app_kafka_basic")
+include("askexchange_logging_common")
+include("askexchange_logging_logback")

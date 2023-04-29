@@ -1,6 +1,6 @@
 package ru.shirnin.askexchange.app.kafka.strategies.answer
 
-import InnerAnswerContext
+import ru.shirnin.askexchange.inner.models.InnerAnswerContext
 import apiV1AnswerRequestDeserialize
 import apiV1AnswerResponseSerialize
 import fromTransport

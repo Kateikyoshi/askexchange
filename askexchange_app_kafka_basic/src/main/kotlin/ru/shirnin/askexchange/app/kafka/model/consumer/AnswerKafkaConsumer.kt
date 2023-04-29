@@ -1,6 +1,6 @@
 package ru.shirnin.askexchange.app.kafka.model.consumer
 
-import InnerAnswerContext
+import ru.shirnin.askexchange.inner.models.InnerAnswerContext
 import InnerAnswerStub
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.Dispatchers

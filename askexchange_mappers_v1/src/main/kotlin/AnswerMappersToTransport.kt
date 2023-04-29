@@ -1,11 +1,12 @@
 import exceptions.UnknownInnerCmd
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import models.InnerCommand
-import models.InnerError
-import models.InnerState
-import models.answer.InnerAnswer
+import ru.shirnin.askexchange.inner.models.InnerCommand
+import ru.shirnin.askexchange.inner.models.InnerError
+import ru.shirnin.askexchange.inner.models.InnerState
+import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 import ru.shirnin.askexchange.api.v1.models.*
+import ru.shirnin.askexchange.inner.models.InnerAnswerContext
 
 fun InnerAnswerContext.toTransport(): IAnswerResponse = when (val cmd = command) {
     InnerCommand.CREATE -> toTransportCreate()

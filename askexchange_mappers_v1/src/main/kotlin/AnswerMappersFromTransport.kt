@@ -1,10 +1,10 @@
 import exceptions.UnknownRequestClass
 import kotlinx.datetime.Instant
-import models.*
-import models.answer.InnerAnswer
-import models.question.InnerQuestion
+import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
+import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.api.v1.models.*
-import stubs.InnerStubs
+import ru.shirnin.askexchange.inner.models.*
+import ru.shirnin.askexchange.inner.models.stubs.InnerStubs
 
 fun InnerAnswerContext.fromTransport(request: IAnswerRequest) = when (request) {
     is AnswerCreateRequest -> fromTransport(request)

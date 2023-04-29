@@ -1,11 +1,8 @@
 import exceptions.UnknownRequestClass
-import models.InnerCommand
-import models.InnerDebugId
-import models.InnerId
-import models.InnerWorkMode
-import models.question.InnerQuestion
+import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.api.v1.models.*
-import stubs.InnerStubs
+import ru.shirnin.askexchange.inner.models.*
+import ru.shirnin.askexchange.inner.models.stubs.InnerStubs
 
 fun InnerQuestionContext.fromTransport(request: IQuestionRequest) = when (request) {
     is QuestionCreateRequest -> fromTransport(request)
@@ -22,7 +19,7 @@ private fun IQuestionRequest.obtainDebugId(): InnerDebugId {
 
 
 private fun InnerQuestionContext.fromTransport(request: QuestionCreateRequest) {
-    command = InnerCommand.CREATE
+    command = ru.shirnin.askexchange.inner.models.InnerCommand.CREATE
     questionRequest = request.toInnerWithUsername()
 
     debugId = request.obtainDebugId()

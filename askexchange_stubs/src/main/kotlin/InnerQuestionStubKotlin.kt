@@ -1,5 +1,5 @@
-import models.InnerId
-import models.question.InnerQuestion
+import ru.shirnin.askexchange.inner.models.InnerId
+import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 
 object InnerQuestionStubKotlin {
     val QUESTION_KOTLIN: InnerQuestion

@@ -11,6 +11,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.shirnin.askexchange.api.v1.models.*
+import ru.shirnin.askexchange.app.module
 
 class AnswersTest : FunSpec({
     test("answer create") {

@@ -1,7 +1,4 @@
-val ktorVersion: String by project
-val kotlinVersion: String by project
-val logbackVersion: String by project
-val serializationVersion: String by project
+
 
 plugins {
     kotlin("jvm")
@@ -70,6 +67,14 @@ tasks {
 }
 
 dependencies {
+    val ktorVersion: String by project
+    val kotlinVersion: String by project
+    val logbackVersion: String by project
+    val logbackMoreAppendersVersion: String by project
+    val fluentLoggerVersion: String by project
+    val serializationVersion: String by project
+
+
     implementation(kotlin("stdlib"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
@@ -91,11 +96,19 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("com.sndyuk:logback-more-appenders:$logbackMoreAppendersVersion")
+    implementation("org.fluentd:fluent-logger:$fluentLoggerVersion")
 
     //transport models
     implementation(project(":askexchange_mappers_v1"))
     implementation(project(":askexchange_api_v1"))
+    implementation(project(":askexchange_log_api_v1"))
     implementation(project(":askexchange_inner_models_v1"))
+    implementation(project(":askexchange_logging_common"))
+    implementation(project(":askexchange_logging_logback"))
+
+    implementation(project(":askexchange_lib_chain_of_resp"))
+    implementation(project(":askexchange_app_business"))
 
     //stubs
     implementation(project(":askexchange_stubs"))

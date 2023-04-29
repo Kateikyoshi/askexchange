@@ -1,6 +1,6 @@
 import kotlinx.datetime.Instant
-import models.InnerId
-import models.answer.InnerAnswer
+import ru.shirnin.askexchange.inner.models.InnerId
+import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 
 object InnerAnswerStubKotlin {
     val ANSWER_KOTLIN: InnerAnswer
