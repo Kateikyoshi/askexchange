@@ -103,7 +103,7 @@ dependencies {
     implementation(project(":askexchange_mappers_v1"))
     implementation(project(":askexchange_api_v1"))
     implementation(project(":askexchange_log_api_v1"))
-    implementation(project(":askexchange_inner_models_v1"))
+    implementation(project(":askexchange_common"))
     implementation(project(":askexchange_logging_common"))
     implementation(project(":askexchange_logging_logback"))
 

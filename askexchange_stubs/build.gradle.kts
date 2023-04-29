@@ -8,5 +8,5 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-common"))
-    implementation(project(":askexchange_inner_models_v1"))
+    implementation(project(":askexchange_common"))
 }
