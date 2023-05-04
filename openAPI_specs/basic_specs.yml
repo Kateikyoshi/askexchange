@@ -277,6 +277,8 @@ components:
       properties:
         questionId:
           $ref: '#/components/schemas/QuestionId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to QuestionUpdateRequest==========================================
 
@@ -295,6 +297,8 @@ components:
           $ref: '#/components/schemas/QuestionId'
         question:
           $ref: '#/components/schemas/Question'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
 
     #This block is dedicated to QuestionReadRequest==========================================
@@ -383,10 +387,12 @@ components:
         - $ref: '#/components/schemas/QuestionDeleteResponseObject'
 
     QuestionDeleteResponseObject:
-      description: 'Returns in response to question creation'
+      description: 'Returns in response to question deletion'
       properties:
         questionId:
           $ref: '#/components/schemas/QuestionId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to QuestionUpdateResponse==========================================
 
@@ -396,10 +402,12 @@ components:
         - $ref: '#/components/schemas/QuestionUpdateResponseObject'
 
     QuestionUpdateResponseObject:
-      description: 'Returns in response to question creation'
+      description: 'Returns in response to question update'
       properties:
         questionId:
           type: string
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to QuestionReadResponse==========================================
 
@@ -409,7 +417,7 @@ components:
         - $ref: '#/components/schemas/QuestionReadResponseObject'
 
     QuestionReadResponseObject:
-      description: 'Returns in response to question creation'
+      description: 'Returns in response to question read'
       properties:
         question:
           $ref: '#/components/schemas/Question'
@@ -484,6 +492,8 @@ components:
       properties:
         answerId:
           $ref: '#/components/schemas/AnswerId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to AnswerUpdateRequest==========================================
     AnswerUpdateRequest:
@@ -501,6 +511,8 @@ components:
           $ref: '#/components/schemas/AnswerId'
         answer:
           $ref: '#/components/schemas/Answer'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to AnswerReadRequest==========================================
     AnswerReadRequest:
@@ -553,6 +565,8 @@ components:
       properties:
         answerId:
           $ref: '#/components/schemas/AnswerId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to AnswerUpdateResponse
     AnswerUpdateResponse:
@@ -565,6 +579,8 @@ components:
       properties:
         answerId:
           $ref: '#/components/schemas/AnswerId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to AnswerReadResponse==========================================
     AnswerReadResponse:
@@ -577,6 +593,11 @@ components:
       properties:
         answer:
           $ref: '#/components/schemas/Answer'
+
+    #Lock===================================================================================
+    VersionLock:
+      description: 'Optimistically used for UPDATE and DELETE ops locks '
+      type: string
 
     #Debug section==========================================================================
 

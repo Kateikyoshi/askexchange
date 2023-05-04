@@ -19,7 +19,7 @@ private fun IQuestionRequest.obtainDebugId(): InnerDebugId {
 
 
 private fun InnerQuestionContext.fromTransport(request: QuestionCreateRequest) {
-    command = ru.shirnin.askexchange.inner.models.InnerCommand.CREATE
+    command = InnerCommand.CREATE
     questionRequest = request.toInnerWithUsername()
 
     debugId = request.obtainDebugId()
@@ -29,7 +29,7 @@ private fun InnerQuestionContext.fromTransport(request: QuestionCreateRequest) {
 
 private fun InnerQuestionContext.fromTransport(request: QuestionDeleteRequest) {
     command = InnerCommand.DELETE
-    questionRequest = request.questionDeleteObject?.questionId?.toInnerOnlyById() ?: InnerQuestion()
+    questionRequest = request.toInnerWithId()
 
     debugId = request.obtainDebugId()
     workMode = request.debug?.transportToWorkMode() ?: InnerWorkMode.PROD
@@ -60,15 +60,24 @@ private fun QuestionCreateRequest.toInnerWithUsername(): InnerQuestion {
     return innerQuestion
 }
 
-private fun String.toInnerOnlyById() = InnerQuestion(id = this.formInnerId())
-private fun String.formInnerId() = InnerId(this)
+private fun String?.toInnerOnlyById() = InnerQuestion(id = this.formInnerId())
+private fun String?.formInnerId() = this?.let { InnerId(it) } ?: InnerId.NONE
+
+private fun String?.toInnerVersionLock() = this?.let { InnerVersionLock(it) }  ?: InnerVersionLock.NONE
 
 
 private fun QuestionUpdateRequest.toInnerWithId() = InnerQuestion(
     id = InnerId(this.questionUpdateObject?.questionId ?: ""),
     title = this.questionUpdateObject?.question?.title ?: "",
     body = this.questionUpdateObject?.question?.body ?: "",
-    username = ""
+    username = "",
+    lock = this.questionUpdateObject?.versionLock.toInnerVersionLock()
+)
+
+private fun QuestionDeleteRequest.toInnerWithId() = InnerQuestion(
+    id = InnerId(this.questionDeleteObject?.questionId ?: ""),
+    username = "",
+    lock = this.questionDeleteObject?.versionLock.toInnerVersionLock()
 )
 
 fun Question.toInner() = InnerQuestion(

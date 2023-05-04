@@ -88,6 +88,8 @@ class InnerQuestionProcessor {
                     worker("Cleaning body") { questionValidating.body = questionValidating.body.trim() }
                     validateTitleNotEmpty("Checking whether title is empty")
                     validateBodyNotEmpty("Checking whether body is empty")
+                    validateLockNotEmpty("Check if lock isn't empty")
+                    validateLockProperFormat("Checking lock format")
 
                     finishQuestionValidation("Rounding up")
                 }
@@ -111,6 +113,8 @@ class InnerQuestionProcessor {
                     worker("Copying request") { questionValidating = questionRequest.deepCopy() }
                     worker("Cleaning title") { questionValidating.id = InnerId(questionValidating.id.toString().trim()) }
                     validateIdNotEmpty("Checking whether id is empty")
+                    validateLockNotEmpty("Check if lock isn't empty")
+                    validateLockProperFormat("Checking lock format")
 
                     finishQuestionValidation("Rounding up")
                 }

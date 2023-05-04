@@ -1,9 +1,6 @@
 package ru.shirnin.askexchange.inner.models.helpers
 
-import ru.shirnin.askexchange.inner.models.InnerAnswerContext
-import ru.shirnin.askexchange.inner.models.InnerQuestionContext
-import ru.shirnin.askexchange.inner.models.InnerError
-import ru.shirnin.askexchange.inner.models.InnerState
+import ru.shirnin.askexchange.inner.models.*
 
 fun Throwable.asInnerError(
     code: String = "unknown",
@@ -63,4 +60,16 @@ fun errorAdministration(
     group = "administration",
     message = "Microservice management error: $description",
     level = level,
+)
+
+fun errorRepoConcurrency(
+    expectedLock: InnerVersionLock,
+    actualLock: InnerVersionLock?,
+    exception: Exception? = null,
+) = InnerError(
+    field = "lock",
+    code = "concurrency",
+    group = "repo",
+    message = "The object has been changed concurrently by another user or process",
+    exception = exception ?: IllegalStateException("Expected lock is $expectedLock, actual: $actualLock"),
 )

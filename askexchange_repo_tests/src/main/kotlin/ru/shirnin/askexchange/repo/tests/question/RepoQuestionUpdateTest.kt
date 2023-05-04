@@ -18,7 +18,8 @@ fun updateSuccess(repo: QuestionRepository) = funSpec {
                 id = updateSuccess.id,
                 title = updateSuccess.title,
                 body = updateSuccess.body,
-                username = updateSuccess.username
+                username = updateSuccess.username,
+                lock = BaseUpdate.initObjects.first().lock
             )
         }
 

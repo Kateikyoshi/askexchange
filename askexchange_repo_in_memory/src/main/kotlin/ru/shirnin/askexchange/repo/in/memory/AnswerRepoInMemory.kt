@@ -2,9 +2,13 @@ package ru.shirnin.askexchange.repo.`in`.memory
 
 import com.benasher44.uuid.uuid4
 import io.github.reactivecircus.cache4k.Cache
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import ru.shirnin.askexchange.inner.models.InnerError
 import ru.shirnin.askexchange.inner.models.InnerId
+import ru.shirnin.askexchange.inner.models.InnerVersionLock
 import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
+import ru.shirnin.askexchange.inner.models.helpers.errorRepoConcurrency
 import ru.shirnin.askexchange.repo.`in`.memory.model.AnswerEntity
 import ru.shirnin.askexchange.repo.answer.DbAnswerIdRequest
 import ru.shirnin.askexchange.repo.answer.DbAnswerRequest
@@ -18,6 +22,8 @@ class AnswerRepoInMemory(
     ttl: Duration = 2.minutes,
     val randomUuid: () -> String = { uuid4().toString() }
 ): AnswerRepository {
+
+    private val mutex: Mutex = Mutex()
 
     private val cache = Cache.Builder<String, AnswerEntity>()
         .expireAfterWrite(ttl)
@@ -67,12 +73,12 @@ class AnswerRepoInMemory(
 
     override suspend fun updateAnswer(request: DbAnswerRequest): DbAnswerResponse {
         val key = request.answer.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldVersionLock =
+            request.answer.lock.takeIf { it != InnerVersionLock.NONE }?.asString() ?: return resultErrorEmptyLock
         val newAnswer = request.answer.copy()
         val entity = AnswerEntity(newAnswer)
 
-        return when (cache.get(key)) {
-            null -> resultErrorNotFound
-            else -> {
+        return checkLockAndUpdate(key, oldVersionLock) {
                 cache.put(key, entity)
                 DbAnswerResponse(
                     data = newAnswer,
@@ -80,20 +86,43 @@ class AnswerRepoInMemory(
                 )
             }
         }
-    }
+
 
     override suspend fun deleteAnswer(request: DbAnswerIdRequest): DbAnswerResponse {
         val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldVersionLock =
+            request.lock.takeIf { it != InnerVersionLock.NONE }?.asString() ?: return resultErrorEmptyLock
 
-        return when (val oldAnswer = cache.get(key)) {
-            null -> resultErrorNotFound
-            else -> {
+        return checkLockAndUpdate(key, oldVersionLock) { oldAnswer ->
                 cache.invalidate(key)
                 DbAnswerResponse(
                     data = oldAnswer.toInner(),
                     isSuccess = true
                 )
             }
+        }
+
+
+    private suspend fun checkLockAndUpdate(
+        key: String,
+        oldVersionLock: String,
+        codePiece: (oldAnswer: AnswerEntity) -> DbAnswerResponse
+    ): DbAnswerResponse = mutex.withLock {
+        val oldAnswer = cache.get(key)
+        when {
+            oldAnswer == null -> resultErrorNotFound
+            oldAnswer.lock != oldVersionLock -> DbAnswerResponse(
+                data = oldAnswer.toInner(),
+                isSuccess = false,
+                errors = listOf(
+                    errorRepoConcurrency(
+                        InnerVersionLock(oldVersionLock),
+                        oldAnswer.lock?.let { InnerVersionLock(it) }
+                    )
+                )
+            )
+
+            else -> codePiece(oldAnswer)
         }
     }
 
@@ -119,6 +148,19 @@ class AnswerRepoInMemory(
                     code = "not-found",
                     field = "id",
                     message = "Not found"
+                )
+            )
+        )
+
+        val resultErrorEmptyLock = DbAnswerResponse(
+            data = null,
+            isSuccess = false,
+            errors = listOf(
+                InnerError(
+                    code = "lock-empty",
+                    group = "validation",
+                    field = "lock",
+                    message = "Lock must not be null or blank"
                 )
             )
         )

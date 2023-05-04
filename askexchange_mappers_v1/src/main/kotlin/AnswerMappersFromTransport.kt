@@ -32,7 +32,7 @@ private fun InnerAnswerContext.fromTransport(request: AnswerCreateRequest) {
 
 private fun InnerAnswerContext.fromTransport(request: AnswerDeleteRequest) {
     command = InnerCommand.DELETE
-    answerRequest = request.answerDeleteObject?.answerId?.toInnerOnlyById() ?: InnerAnswer()
+    answerRequest = request.toInnerWithId()
 
     debugId = request.obtainDebugId()
     workMode = request.debug?.transportToWorkMode() ?: InnerWorkMode.PROD
@@ -60,7 +60,13 @@ private fun InnerAnswerContext.fromTransport(request: AnswerReadRequest) {
 private fun AnswerUpdateRequest.toInnerWithId() = InnerAnswer(
     id = InnerId(this.answerUpdateObject?.answerId ?: ""),
     body = this.answerUpdateObject?.answer?.body ?: "",
-    likes = this.answerUpdateObject?.answer?.likes?.toLong() ?: 0
+    likes = this.answerUpdateObject?.answer?.likes?.toLong() ?: 0,
+    lock = this.answerUpdateObject?.versionLock.toInnerVersionLock()
+)
+
+private fun AnswerDeleteRequest.toInnerWithId() = InnerAnswer(
+    id = InnerId(this.answerDeleteObject?.answerId ?: ""),
+    lock = this.answerDeleteObject?.versionLock.toInnerVersionLock()
 )
 
 private fun Answer.toInner() = InnerAnswer(
@@ -70,9 +76,11 @@ private fun Answer.toInner() = InnerAnswer(
     likes = 0L
 )
 
-private fun String.toInnerUserOnlyById() = InnerUser(id = this.formInnerId())
-private fun String.toInnerQuestionOnlyById() = InnerQuestion(id = this.formInnerId())
-private fun String.formInnerId() = InnerId(this)
-private fun String.toInnerOnlyById() = InnerAnswer(id = this.formInnerId())
+private fun String?.toInnerUserOnlyById() = InnerUser(id = this.formInnerId())
+private fun String?.toInnerQuestionOnlyById() = InnerQuestion(id = this.formInnerId())
+private fun String?.formInnerId() = this?.let { InnerId(it) } ?: InnerId.NONE
+private fun String?.toInnerOnlyById() = InnerAnswer(id = this.formInnerId())
+
+private fun String?.toInnerVersionLock() = this?.let { InnerVersionLock(it) } ?: InnerVersionLock.NONE
 
 

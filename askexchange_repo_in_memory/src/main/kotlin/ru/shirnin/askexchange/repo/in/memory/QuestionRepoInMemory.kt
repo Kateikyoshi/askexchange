@@ -2,8 +2,12 @@ package ru.shirnin.askexchange.repo.`in`.memory
 
 import com.benasher44.uuid.uuid4
 import io.github.reactivecircus.cache4k.Cache
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import ru.shirnin.askexchange.inner.models.InnerError
 import ru.shirnin.askexchange.inner.models.InnerId
+import ru.shirnin.askexchange.inner.models.InnerVersionLock
+import ru.shirnin.askexchange.inner.models.helpers.errorRepoConcurrency
 import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.repo.`in`.memory.model.QuestionEntity
 import ru.shirnin.askexchange.repo.question.DbQuestionIdRequest
@@ -17,7 +21,9 @@ class QuestionRepoInMemory(
     initObjects: List<InnerQuestion> = emptyList(),
     ttl: Duration = 2.minutes,
     val randomUuid: () -> String = { uuid4().toString() }
-): QuestionRepository {
+) : QuestionRepository {
+
+    private val mutex: Mutex = Mutex()
 
     private val cache = Cache.Builder<String, QuestionEntity>()
         .expireAfterWrite(ttl)
@@ -67,33 +73,56 @@ class QuestionRepoInMemory(
 
     override suspend fun updateQuestion(request: DbQuestionRequest): DbQuestionResponse {
         val key = request.question.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldVersionLock =
+            request.question.lock.takeIf { it != InnerVersionLock.NONE }?.asString() ?: return resultErrorEmptyLock
         val newQuestion = request.question.copy()
         val entity = QuestionEntity(newQuestion)
 
-        return when (cache.get(key)) {
-            null -> resultErrorNotFound
-            else -> {
-                cache.put(key, entity)
-                DbQuestionResponse(
-                    data = newQuestion,
-                    isSuccess = true
-                )
-            }
+        return checkLockAndUpdate(key, oldVersionLock) {
+            cache.put(key, entity)
+            DbQuestionResponse(
+                data = newQuestion,
+                isSuccess = true
+            )
         }
     }
 
+
     override suspend fun deleteQuestion(request: DbQuestionIdRequest): DbQuestionResponse {
         val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldVersionLock =
+            request.lock.takeIf { it != InnerVersionLock.NONE }?.asString() ?: return resultErrorEmptyLock
 
-        return when (val oldQuestion = cache.get(key)) {
-            null -> resultErrorNotFound
-            else -> {
-                cache.invalidate(key)
-                DbQuestionResponse(
-                    data = oldQuestion.toInner(),
-                    isSuccess = true
+        return checkLockAndUpdate(key, oldVersionLock) { oldQuestion ->
+            cache.invalidate(key)
+            DbQuestionResponse(
+                data = oldQuestion.toInner(),
+                isSuccess = true
+            )
+        }
+    }
+
+
+    private suspend fun checkLockAndUpdate(
+        key: String,
+        oldVersionLock: String,
+        codePiece: (oldQuestion: QuestionEntity) -> DbQuestionResponse
+    ): DbQuestionResponse = mutex.withLock {
+        val oldQuestion = cache.get(key)
+        when {
+            oldQuestion == null -> resultErrorNotFound
+            oldQuestion.lock != oldVersionLock -> DbQuestionResponse(
+                data = oldQuestion.toInner(),
+                isSuccess = false,
+                errors = listOf(
+                    errorRepoConcurrency(
+                        InnerVersionLock(oldVersionLock),
+                        oldQuestion.lock?.let { InnerVersionLock(it) }
+                    )
                 )
-            }
+            )
+
+            else -> codePiece(oldQuestion)
         }
     }
 
@@ -119,6 +148,19 @@ class QuestionRepoInMemory(
                     code = "not-found",
                     field = "id",
                     message = "Not found"
+                )
+            )
+        )
+
+        val resultErrorEmptyLock = DbQuestionResponse(
+            data = null,
+            isSuccess = false,
+            errors = listOf(
+                InnerError(
+                    code = "lock-empty",
+                    group = "validation",
+                    field = "lock",
+                    message = "Lock must not be null or blank"
                 )
             )
         )

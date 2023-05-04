@@ -11,10 +11,7 @@ import ru.shirnin.askexchange.business.repo.answer.repoPrepareUpdate
 import ru.shirnin.askexchange.business.repo.answer.repoUpdate
 import ru.shirnin.askexchange.business.repo.answer.repoDelete
 import ru.shirnin.askexchange.business.repo.answer.repoPrepareDelete
-import ru.shirnin.askexchange.business.validation.answer.finishAnswerValidation
-import ru.shirnin.askexchange.business.validation.answer.validateBodyNotEmpty
-import ru.shirnin.askexchange.business.validation.answer.validateIdNotEmpty
-import ru.shirnin.askexchange.business.validation.answer.validation
+import ru.shirnin.askexchange.business.validation.answer.*
 import ru.shirnin.askexchange.inner.models.InnerAnswerContext
 import ru.shirnin.askexchange.inner.models.InnerCommand
 import ru.shirnin.askexchange.business.workers.answer.*
@@ -91,6 +88,8 @@ class InnerAnswerProcessor {
                     worker("Copying request") { answerValidating = answerRequest.deepCopy() }
                     worker("Cleaning body") { answerValidating.body = answerValidating.body.trim() }
                     validateBodyNotEmpty("Checking whether body is empty")
+                    validateLockNotEmpty("Check if lock isn't empty")
+                    validateLockProperFormat("Checking lock format")
 
                     finishAnswerValidation("Rounding up")
                 }
@@ -114,6 +113,8 @@ class InnerAnswerProcessor {
                     worker("Copying request") { answerValidating = answerRequest.deepCopy() }
                     worker("Cleaning title") { answerValidating.id = InnerId(answerValidating.id.toString().trim()) }
                     validateIdNotEmpty("Checking whether id is empty")
+                    validateLockNotEmpty("Check if lock isn't empty")
+                    validateLockProperFormat("Checking lock format")
 
                     finishAnswerValidation("Rounding up")
                 }
