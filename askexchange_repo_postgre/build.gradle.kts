@@ -10,6 +10,8 @@ dependencies {
     val kmpUUIDVersion: String by project
     val exposedVersion: String by project
 
+    implementation("org.postgresql:postgresql:42.6.0")
+
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")

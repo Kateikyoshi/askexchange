@@ -74,6 +74,7 @@ dependencies {
     val fluentLoggerVersion: String by project
     val serializationVersion: String by project
 
+    implementation("org.postgresql:postgresql:42.6.0")
 
     implementation(kotlin("stdlib"))
 
@@ -132,6 +133,6 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:1.3.4")
     testImplementation("org.testcontainers:postgresql:1.18.0")
     testImplementation("org.testcontainers:junit-jupiter:1.18.0")
-    testImplementation("org.postgresql:postgresql:42.6.0")
+
 }
 

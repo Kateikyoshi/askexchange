@@ -12,6 +12,8 @@ services:
     depends_on:
       psql:
         condition: service_healthy
+      fluent-bit:
+        condition: service_started
 
   psql:
     image: postgres:15.2-alpine
