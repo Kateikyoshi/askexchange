@@ -22,7 +22,9 @@ suspend inline fun <reified Q : IQuestionRequest, @Suppress("unused") reified R 
     command: InnerCommand? = null,
 ) {
     val processor = appSettings.questionProcessor
-    val context = InnerQuestionContext()
+    val context = InnerQuestionContext(
+        settings = appSettings.chainSettings
+    )
 
     try {
         log.doWithLogging(logId) {

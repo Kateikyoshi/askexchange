@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange
+package ru.shirnin.askexchange.app
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -11,13 +11,14 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.shirnin.askexchange.api.v1.models.*
-import ru.shirnin.askexchange.app.module
 
 class QuestionsTest : FunSpec({
     test("question create") {
         testApplication {
             application {
-                module()
+                module(
+                    appSettings = initTestAppSettings()
+                )
             }
             val client = createClient {
                 install(ContentNegotiation) {
@@ -49,7 +50,7 @@ class QuestionsTest : FunSpec({
             }
             val responseObj = response.body<QuestionCreateResponse>()
 
-            println(responseObj)
+            println("resp obj\n$responseObj")
 
             response.status.value shouldBe 200
             responseObj.questionId shouldBe "1"
@@ -58,7 +59,9 @@ class QuestionsTest : FunSpec({
     test("question update") {
         testApplication {
             application {
-                module()
+                module(
+                    appSettings = initTestAppSettings()
+                )
             }
             val client = createClient {
                 install(ContentNegotiation) {

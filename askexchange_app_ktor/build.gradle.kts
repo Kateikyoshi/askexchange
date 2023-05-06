@@ -1,4 +1,4 @@
-
+import io.ktor.plugin.features.*
 
 plugins {
     kotlin("jvm")
@@ -26,16 +26,16 @@ repositories {
 
 ktor {
     docker {
-        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
-        localImageName.set("bellsoft/liberica-openjdk-alpine")
-        imageTag.set("17")
-        portMappings.set(listOf(
-            io.ktor.plugin.features.DockerPortMapping(
-                80,
-                8080,
-                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
-            )
-        ))
+        jreVersion.set(JreVersion.valueOf("JRE_$javaVersion"))
+        localImageName.set(project.name)
+        imageTag.set(project.version.toString())
+//        portMappings.set(listOf(
+//            io.ktor.plugin.features.DockerPortMapping(
+//                80,
+//                8080,
+//                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+//            )
+//        ))
     }
 }
 
@@ -110,11 +110,15 @@ dependencies {
     implementation(project(":askexchange_lib_chain_of_resp"))
     implementation(project(":askexchange_app_business"))
 
+    implementation(project(":askexchange_repo_postgre"))
     implementation(project(":askexchange_repo_in_memory"))
     implementation(project(":askexchange_repo_stubs"))
 
     //stubs
     implementation(project(":askexchange_stubs"))
+
+
+    //implementation("org.postgresql:postgresql:42.6.0")
 
     //tests
     val kotestVersion: String by project
@@ -124,5 +128,10 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:1.3.4")
+    testImplementation("org.testcontainers:postgresql:1.18.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.18.0")
+    testImplementation("org.postgresql:postgresql:42.6.0")
 }
 

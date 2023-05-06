@@ -1,4 +1,4 @@
-package ru.shirnin.askexchange
+package ru.shirnin.askexchange.app
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -11,13 +11,14 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.shirnin.askexchange.api.v1.models.*
-import ru.shirnin.askexchange.app.module
 
 class AnswersTest : FunSpec({
     test("answer create") {
         testApplication {
             application {
-                module()
+                module(
+                    appSettings = initTestAppSettings()
+                )
             }
             val client = createClient {
                 install(ContentNegotiation) {
@@ -60,7 +61,9 @@ class AnswersTest : FunSpec({
     test("question update") {
         testApplication {
             application {
-                module()
+                module(
+                    appSettings = initTestAppSettings()
+                )
             }
             val client = createClient {
                 install(ContentNegotiation) {
