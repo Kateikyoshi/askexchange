@@ -12,6 +12,7 @@ import ru.shirnin.askexchange.repo.answer.DbAnswerRequest
 import ru.shirnin.askexchange.repo.answer.DbAnswerResponse
 import ru.shirnin.askexchange.repo.postgre.tables.AnswerTable
 import ru.shirnin.askexchange.repo.postgre.tables.QuestionTable
+import ru.shirnin.askexchange.repo.postgre.tables.UserTable
 //import ru.shirnin.askexchange.repo.postgre.tables.UserTable
 import java.lang.IllegalArgumentException
 
@@ -32,8 +33,7 @@ class PostgreAnswerRepo(
 
     init {
         transaction {
-            //SchemaUtils.create(UserTable, QuestionTable, AnswerTable)
-            SchemaUtils.create(QuestionTable, AnswerTable)
+            SchemaUtils.create(UserTable, QuestionTable, AnswerTable)
         }
     }
 

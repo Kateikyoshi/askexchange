@@ -74,8 +74,6 @@ dependencies {
     val fluentLoggerVersion: String by project
     val serializationVersion: String by project
 
-    implementation("org.postgresql:postgresql:42.6.0")
-
     implementation(kotlin("stdlib"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
@@ -119,11 +117,10 @@ dependencies {
     implementation(project(":askexchange_stubs"))
 
 
-    //implementation("org.postgresql:postgresql:42.6.0")
-
     //tests
     val kotestVersion: String by project
     val mockkVersion: String by project
+    val postgresDriverVersion: String by project
     testImplementation(project(":askexchange_repo_tests"))
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")

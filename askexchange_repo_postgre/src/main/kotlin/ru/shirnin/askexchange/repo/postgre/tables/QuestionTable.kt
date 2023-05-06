@@ -10,7 +10,7 @@ object QuestionTable : Table("question") {
     val id = varchar("id", 128).index()
     val title = varchar("title", 128)
     val body = largeText("body")
-    //val user = reference("name", UserTable.name)
+    val user = reference("userId", UserTable.id)
     val lock = varchar("lock", 50)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id, name = "PK_Question_Id")
@@ -19,7 +19,7 @@ object QuestionTable : Table("question") {
         id = InnerId(response[id].toString()),
         title = response[title],
         body = response[body],
-        //username = response[user],
+        username = response[user].toString(),
         lock = InnerVersionLock(response[lock])
     )
 }

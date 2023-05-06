@@ -9,6 +9,7 @@ dependencies {
     val coroutinesVersion: String by project
     val kmpUUIDVersion: String by project
     val exposedVersion: String by project
+    val postgresDriverVersion: String by project
 
     implementation("org.postgresql:postgresql:42.6.0")
 
@@ -35,5 +36,9 @@ dependencies {
 tasks {
     test {
         useJUnitPlatform()
+    }
+    withType<Test> {
+        environment("askexchange.sql_drop_db", true)
+        environment("askexchange.sql_fast_migration", true)
     }
 }

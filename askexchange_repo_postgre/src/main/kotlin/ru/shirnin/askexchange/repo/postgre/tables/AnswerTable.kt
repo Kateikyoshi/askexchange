@@ -12,6 +12,7 @@ object AnswerTable : Table("answer") {
     val body = largeText("body")
     val date = varchar("date", 128)
     val likes = integer("likes")
+    val user = reference("userId", UserTable.id)
     val lock = varchar("lock", 50)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id, name = "PK_Answer_Id")
