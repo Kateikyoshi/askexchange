@@ -93,7 +93,26 @@ class PostgreAnswerRepo(
     }
 
     override suspend fun updateAnswer(request: DbAnswerRequest): DbAnswerResponse {
-        TODO("Not yet implemented")
+        val key = request.answer.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldLock = request.answer.lock.takeIf { it != InnerVersionLock.NONE }?.asString()
+        val newAnswer = request.answer.copy(lock = InnerVersionLock(randomUuid()))
+
+        return safeTransaction({
+            val local = AnswerTable.select { AnswerTable.id eq key }.singleOrNull()?.let {
+                AnswerTable.from(it)
+            } ?: return@safeTransaction resultErrorNotFound
+
+            return@safeTransaction when (oldLock) {
+                null, local.lock.asString() -> updateDb(newAnswer)
+                else -> resultErrorConcurrent(local.lock.asString(), local)
+            }
+        }, {
+            DbAnswerResponse(
+                data = request.answer,
+                isSuccess = false,
+                errors = listOf(InnerError(field = "id", message = "Not Found 9", code = notFoundCode))
+            )
+        })
     }
 
     /**
@@ -123,7 +142,7 @@ class PostgreAnswerRepo(
     }
 
     override suspend fun deleteAnswer(request: DbAnswerIdRequest): DbAnswerResponse {
-        val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return PostgreAnswerRepo.resultErrorEmptyId
+        val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
 
         return safeTransaction({
             val local = AnswerTable.select { AnswerTable.id eq key }.single().let { AnswerTable.from(it) }
@@ -131,7 +150,7 @@ class PostgreAnswerRepo(
                 AnswerTable.deleteWhere { id eq request.id.asString() }
                 DbAnswerResponse(data = local, isSuccess = true)
             } else {
-                PostgreAnswerRepo.resultErrorConcurrent(request.lock.asString(), local)
+                resultErrorConcurrent(request.lock.asString(), local)
             }
         }, {
             DbAnswerResponse(

@@ -42,7 +42,7 @@ class AnswerMapperTest: FunSpec({
 
         val context = InnerAnswerContext(
             command = InnerCommand.CREATE,
-            state = InnerState.RUNNING,
+            state = InnerState.FINISHED,
             errors = mutableListOf(InnerError("1"), InnerError("2")),
             workMode = InnerWorkMode.PROD,
             stubCase = InnerStubs.SUCCESS,

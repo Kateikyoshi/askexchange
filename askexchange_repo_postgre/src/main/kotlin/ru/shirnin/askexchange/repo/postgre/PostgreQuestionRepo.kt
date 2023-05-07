@@ -150,16 +150,22 @@ class PostgreQuestionRepo(
         return DbQuestionResponse(data = QuestionTable.from(result), isSuccess = true)
     }
 
+    /**
+     * All ANSWERS related to the deleted QUESTION have to deleted too.
+     */
     override suspend fun deleteQuestion(request: DbQuestionIdRequest): DbQuestionResponse {
         val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
 
         return safeTransaction({
-            val local = QuestionTable.select { QuestionTable.id eq key }.single().let { QuestionTable.from(it) }
-            if (local.lock == request.lock) {
+            val questionQueryResult = QuestionTable.select { QuestionTable.id eq key }.single()
+            val extractedQuestion = QuestionTable.from(questionQueryResult)
+
+            if (extractedQuestion.lock == request.lock) {
+                AnswerTable.deleteWhere { parentQuestionId eq QuestionTable.id }
                 QuestionTable.deleteWhere { id eq request.id.asString() }
-                DbQuestionResponse(data = local, isSuccess = true)
+                DbQuestionResponse(data = extractedQuestion, isSuccess = true)
             } else {
-                resultErrorConcurrent(request.lock.asString(), local)
+                resultErrorConcurrent(request.lock.asString(), extractedQuestion)
             }
         }, {
             DbQuestionResponse(

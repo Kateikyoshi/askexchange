@@ -41,7 +41,7 @@ class QuestionMapperTest: FunSpec({
 
         val context = InnerQuestionContext(
             command = InnerCommand.CREATE,
-            state = InnerState.RUNNING,
+            state = InnerState.FINISHED,
             errors = mutableListOf(InnerError("1"), InnerError("2")),
             workMode = InnerWorkMode.PROD,
             stubCase = InnerStubs.SUCCESS,
