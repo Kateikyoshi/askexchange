@@ -10,6 +10,14 @@ data class InnerAnswer(
     var body: String = "",
     var date: Instant = Instant.DISTANT_PAST,
     var likes: Long = 0,
+    /**
+     * Can't be mutated later (update is blocked)
+     */
+    var parentUserId: InnerId = InnerId.NONE,
+    /**
+     * Can't be mutated later (update is blocked)
+     */
+    var parentQuestionId: InnerId = InnerId.NONE,
     var lock: InnerVersionLock = InnerVersionLock.NONE
 ) {
     fun deepCopy(): InnerAnswer = copy()

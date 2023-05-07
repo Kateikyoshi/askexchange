@@ -24,7 +24,9 @@ data class InnerAnswerContext (
     var answerValidating: InnerAnswer = InnerAnswer(),
     var answerValidated: InnerAnswer = InnerAnswer(),
 
-    var user: InnerUser = InnerUser(),
+    /**
+     * Question parent of that answer
+     */
     var question: InnerQuestion = InnerQuestion(),
 
     var answerRequest: InnerAnswer = InnerAnswer(),

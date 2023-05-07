@@ -20,7 +20,7 @@ class QuestionMapperTest: FunSpec({
             requestType = "CREATE",
             debugId = "1",
             questionCreateObject = QuestionCreateObject(
-                username = "Jill",
+                userId = "1111",
                 question = Question(
                     title = "Biohazard",
                     body = body
@@ -50,13 +50,12 @@ class QuestionMapperTest: FunSpec({
                 id = InnerId("222"),
                 title = "title",
                 body = "body",
-                username = "username"
+                parentUserId = InnerId("444")
             ),
             questionResponse = InnerQuestion(
                 id = InnerId("333"),
                 title = "title2",
-                body = "body2",
-                username = "username2"
+                body = "body2"
             ),
             answersOfQuestionResponse = mutableListOf(
                 InnerAnswer(

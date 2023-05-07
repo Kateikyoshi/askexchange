@@ -29,5 +29,7 @@ fun InnerAnswer.toLog() = AnswerLog(
     id = id.takeIf { it != InnerId.NONE }?.asString(),
     date = date.toString(),
     body = body.takeIf { it.isNotBlank() },
-    likes = likes.toString()
+    likes = likes.toString(),
+    parentUserId = parentUserId.takeIf { it != InnerId.NONE }?.asString(),
+    parentQuestionId = parentQuestionId.takeIf { it != InnerId.NONE }?.asString()
 )

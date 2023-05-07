@@ -48,18 +48,12 @@ class AnswerMapperTest: FunSpec({
             stubCase = InnerStubs.SUCCESS,
             debugId = InnerDebugId(debugId),
 
-            user = InnerUser(
-                id = InnerId("555"),
-                login = "Christian",
-                password = "223",
-                email = "com@com",
-                expertise = "prowler"
-            ),
+
             question = InnerQuestion(
                 id = InnerId("666"),
                 title = "Where am I?",
                 body = "I think I'm lost",
-                username = "Boss"
+                parentUserId = InnerId("888")
             ),
             answerRequest = InnerAnswer(
                 id = InnerId("444"),

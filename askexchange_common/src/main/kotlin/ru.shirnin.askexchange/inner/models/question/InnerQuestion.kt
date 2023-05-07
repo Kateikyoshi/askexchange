@@ -7,7 +7,10 @@ data class InnerQuestion (
     var id: InnerId = InnerId.NONE,
     var title: String = "",
     var body: String = "",
-    var username: String = "",
+    /**
+     * Can't be mutated later (update is blocked)
+     */
+    var parentUserId: InnerId = InnerId.NONE,
     var lock: InnerVersionLock = InnerVersionLock.NONE
 ) {
     fun deepCopy(): InnerQuestion = copy()

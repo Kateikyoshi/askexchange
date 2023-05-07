@@ -21,9 +21,7 @@ private fun IAnswerRequest.obtainDebugId(): InnerDebugId {
 
 private fun InnerAnswerContext.fromTransport(request: AnswerCreateRequest) {
     command = InnerCommand.CREATE
-    question = request.answerCreateObject?.questionId?.toInnerQuestionOnlyById() ?: InnerQuestion()
-    user = request.answerCreateObject?.userId?.toInnerUserOnlyById() ?: InnerUser()
-    answerRequest = request.answerCreateObject?.answer?.toInner() ?: InnerAnswer()
+    answerRequest = request.toInnerWithParentUserAndQuestionId()
 
     debugId = request.obtainDebugId()
     workMode = request.debug?.transportToWorkMode() ?: InnerWorkMode.PROD
@@ -69,14 +67,19 @@ private fun AnswerDeleteRequest.toInnerWithId() = InnerAnswer(
     lock = this.answerDeleteObject?.versionLock.toInnerVersionLock()
 )
 
+private fun AnswerCreateRequest.toInnerWithParentUserAndQuestionId(): InnerAnswer {
+    val innerAnswer = this.answerCreateObject?.answer?.toInner() ?: InnerAnswer()
+    innerAnswer.parentUserId = this.answerCreateObject?.userId.formInnerId()
+    innerAnswer.parentQuestionId = this.answerCreateObject?.questionId.formInnerId()
+    return innerAnswer
+}
+
 private fun Answer.toInner() = InnerAnswer(
     id = InnerId(""),
     body = this.body ?: "",
     date = if (date != null) Instant.parse(date!!) else Instant.DISTANT_PAST,
     likes = 0L
 )
-
-private fun String?.toInnerUserOnlyById() = InnerUser(id = this.formInnerId())
 private fun String?.toInnerQuestionOnlyById() = InnerQuestion(id = this.formInnerId())
 private fun String?.formInnerId() = this?.let { InnerId(it) } ?: InnerId.NONE
 private fun String?.toInnerOnlyById() = InnerAnswer(id = this.formInnerId())

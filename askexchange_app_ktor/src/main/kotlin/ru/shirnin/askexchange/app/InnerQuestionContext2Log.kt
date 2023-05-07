@@ -3,6 +3,7 @@ package ru.shirnin.askexchange.app
 import ru.shirnin.askexchange.inner.models.InnerQuestionContext
 import kotlinx.datetime.Clock
 import ru.shirnin.askexchange.inner.models.InnerError
+import ru.shirnin.askexchange.inner.models.InnerId
 import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.log.api.v1.models.CommonQuestionLogModel
 import ru.shirnin.askexchange.log.api.v1.models.ErrorLogModel
@@ -33,8 +34,8 @@ fun InnerError.toLog() = ErrorLogModel(
 )
 
 fun InnerQuestion.toLog() = QuestionLog(
-    id = id.takeIf { it != ru.shirnin.askexchange.inner.models.InnerId.NONE }?.asString(),
+    id = id.takeIf { it != InnerId.NONE }?.asString(),
     title = title.takeIf { it.isNotBlank() },
     body = body.takeIf { it.isNotBlank() },
-    username = username.takeIf { it.isNotBlank() }
+    parentUserId = parentUserId.takeIf { it != InnerId.NONE }?.asString()
 )

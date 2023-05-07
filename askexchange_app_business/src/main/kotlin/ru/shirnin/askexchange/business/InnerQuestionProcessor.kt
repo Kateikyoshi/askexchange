@@ -16,6 +16,7 @@ import ru.shirnin.askexchange.inner.models.InnerId
 import ru.shirnin.askexchange.inner.models.InnerState
 
 class InnerQuestionProcessor {
+
     suspend fun exec(ctx: InnerQuestionContext) = BusinessChain.execute(ctx)
 
     companion object {
@@ -57,7 +58,9 @@ class InnerQuestionProcessor {
                 }
                 validation {
                     worker("Copying request") { questionValidating = questionRequest.deepCopy() }
-                    worker("Cleaning title") { questionValidating.id = InnerId(questionValidating.id.toString().trim()) }
+                    worker("Cleaning title") {
+                        questionValidating.id = InnerId(questionValidating.id.toString().trim())
+                    }
                     validateIdNotEmpty("Checking whether id is empty")
 
                     finishQuestionValidation("Rounding up")
@@ -111,7 +114,9 @@ class InnerQuestionProcessor {
                 }
                 validation {
                     worker("Copying request") { questionValidating = questionRequest.deepCopy() }
-                    worker("Cleaning title") { questionValidating.id = InnerId(questionValidating.id.toString().trim()) }
+                    worker("Cleaning title") {
+                        questionValidating.id = InnerId(questionValidating.id.toString().trim())
+                    }
                     validateIdNotEmpty("Checking whether id is empty")
                     validateLockNotEmpty("Check if lock isn't empty")
                     validateLockProperFormat("Checking lock format")

@@ -215,9 +215,8 @@ components:
     QuestionCreateObject:
       type: object
       properties:
-        username:
-          type: string
-          description: 'Username to tie question to'
+        userId:
+          $ref: '#/components/schemas/UserId'
         question:
           $ref: '#/components/schemas/Question'
 

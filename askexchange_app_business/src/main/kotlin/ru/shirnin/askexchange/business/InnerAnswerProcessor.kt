@@ -26,7 +26,7 @@ class InnerAnswerProcessor {
     suspend fun exec(ctx: InnerAnswerContext) = BusinessChain.execute(ctx)
 
     companion object {
-        private val BusinessChain = rootChain{
+        private val BusinessChain = rootChain {
             initStatus("Status initialization")
             initRepo("Repo initialization")
 
