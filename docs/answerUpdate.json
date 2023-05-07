@@ -1,0 +1,16 @@
+{
+  "debug": {
+    "mode": "prod",
+    "stub": "success"
+  },
+  "requestType": "update",
+  "debugId": "11",
+  "answerUpdateObject": {
+    "answerId": "0650369e-1dda-4f04-bcbb-553ee0d54d1c",
+    "versionLock": "b9be9c99-6600-4db4-a285-d71474848429",
+    "answer": {
+      "body": "body5",
+      "likes": 777
+    }
+  }
+}

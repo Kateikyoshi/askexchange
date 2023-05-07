@@ -161,7 +161,8 @@ class PostgreQuestionRepo(
             val extractedQuestion = QuestionTable.from(questionQueryResult)
 
             if (extractedQuestion.lock == request.lock) {
-                AnswerTable.deleteWhere { parentQuestionId eq QuestionTable.id }
+                val deletedAnswers = AnswerTable.deleteWhere { parentQuestionId eq request.id.asString() }
+                println("Deleted child answers number: $deletedAnswers")
                 QuestionTable.deleteWhere { id eq request.id.asString() }
                 DbQuestionResponse(data = extractedQuestion, isSuccess = true)
             } else {

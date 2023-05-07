@@ -78,8 +78,8 @@ class PostgreAnswerRepo(
 
     override suspend fun readAnswer(request: DbAnswerIdRequest): DbAnswerResponse {
         return safeTransaction({
-            val result = (AnswerTable innerJoin UserTable innerJoin QuestionTable)
-                .select { AnswerTable.id.eq(request.id.asString()) }.single()
+            val result = (AnswerTable innerJoin UserTable)
+                .select { AnswerTable.id eq request.id.asString() }.single()
 
             DbAnswerResponse(AnswerTable.from(result), true)
         }, {
@@ -132,6 +132,7 @@ class PostgreAnswerRepo(
 
         AnswerTable.update({ AnswerTable.id eq newAnswer.id.asString() }) {
             it[body] = newAnswer.body
+            it[likes] = newAnswer.likes.toInt()
             it[parentUserId] = newAnswer.parentUserId.asString()
             it[parentQuestionId] = newAnswer.parentQuestionId.asString()
             it[lock] = newAnswer.lock.asString()
