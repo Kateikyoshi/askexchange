@@ -2,10 +2,12 @@ package ru.shirnin.askexchange.repo.postgre
 
 import com.benasher44.uuid.uuid4
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.shirnin.askexchange.inner.models.InnerError
 import ru.shirnin.askexchange.inner.models.InnerId
 import ru.shirnin.askexchange.inner.models.InnerVersionLock
+import ru.shirnin.askexchange.inner.models.helpers.errorRepoConcurrency
 import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.repo.postgre.tables.AnswerTable
 import ru.shirnin.askexchange.repo.postgre.tables.QuestionTable
@@ -15,6 +17,7 @@ import ru.shirnin.askexchange.repo.question.DbQuestionIdRequest
 import ru.shirnin.askexchange.repo.question.DbQuestionRequest
 import ru.shirnin.askexchange.repo.question.DbQuestionResponse
 import ru.shirnin.askexchange.repo.question.QuestionRepository
+import java.lang.IllegalArgumentException
 import java.sql.SQLException
 
 class PostgreQuestionRepo(
@@ -80,15 +83,84 @@ class PostgreQuestionRepo(
 
 
     override suspend fun readQuestion(request: DbQuestionIdRequest): DbQuestionResponse {
-        TODO("Not yet implemented")
+        return safeTransaction({
+            val result =
+                (QuestionTable innerJoin UserTable).select { QuestionTable.id.eq(request.id.asString()) }.single()
+
+            DbQuestionResponse(QuestionTable.from(result), true)
+        }, {
+            val error = when (this) {
+                is NoSuchElementException -> InnerError(field = "id", message = "Not Found", code = notFoundCode)
+                is IllegalArgumentException -> InnerError(message = "More than one element with the same id")
+                else -> InnerError(message = localizedMessage)
+            }
+            DbQuestionResponse(data = null, isSuccess = false, errors = listOf(error))
+        })
     }
 
     override suspend fun updateQuestion(request: DbQuestionRequest): DbQuestionResponse {
-        TODO("Not yet implemented")
+        val key = request.question.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+        val oldLock = request.question.lock.takeIf { it != InnerVersionLock.NONE }?.asString()
+        val newQuestion = request.question.copy(lock = InnerVersionLock(randomUuid()))
+
+        return safeTransaction({
+            val local = QuestionTable.select { QuestionTable.id eq key }.singleOrNull()?.let {
+                QuestionTable.from(it)
+            } ?: return@safeTransaction resultErrorNotFound
+
+            return@safeTransaction when (oldLock) {
+                null, local.lock.asString() -> updateDb(newQuestion)
+                else -> resultErrorConcurrent(local.lock.asString(), local)
+            }
+        }, {
+            DbQuestionResponse(
+                data = request.question,
+                isSuccess = false,
+                errors = listOf(InnerError(field = "id", message = "Not Found", code = notFoundCode))
+            )
+
+        })
+    }
+
+    private fun updateDb(newQuestion: InnerQuestion): DbQuestionResponse {
+
+        //***atrocity part start
+        UserTable.insertIgnore {
+            if (newQuestion.parentUserId != InnerId.NONE) {
+                it[id] = newQuestion.parentUserId.asString()
+            }
+        }
+        //***atrocity part end
+
+        QuestionTable.update({ QuestionTable.id eq newQuestion.id.asString() }) {
+            it[title] = newQuestion.title
+            it[body] = newQuestion.body
+            it[parentUserId] = newQuestion.parentUserId.asString()
+            it[lock] = newQuestion.lock.asString()
+        }
+        val result = QuestionTable.select { QuestionTable.id eq newQuestion.id.asString() }.single()
+
+        return DbQuestionResponse(data = QuestionTable.from(result), isSuccess = true)
     }
 
     override suspend fun deleteQuestion(request: DbQuestionIdRequest): DbQuestionResponse {
-        TODO("Not yet implemented")
+        val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
+
+        return safeTransaction({
+            val local = QuestionTable.select {  QuestionTable.id eq key }.single().let { QuestionTable.from(it) }
+            if (local.lock == request.lock) {
+                QuestionTable.deleteWhere { id eq request.id.asString() }
+                DbQuestionResponse(data = local, isSuccess = true)
+            } else {
+                resultErrorConcurrent(request.lock.asString(), local)
+            }
+        }, {
+            DbQuestionResponse(
+                data = null,
+                isSuccess = false,
+                errors = listOf(InnerError(field = "id", message = "Not Found"))
+            )
+        })
     }
 
     private fun <T> safeTransaction(statement: Transaction.() -> T, handleException: Throwable.() -> T): T {
@@ -101,4 +173,38 @@ class PostgreQuestionRepo(
         }
     }
 
+    companion object {
+        private const val notFoundCode = "not-found"
+
+        val resultErrorEmptyId = DbQuestionResponse(
+            data = null,
+            isSuccess = false,
+            errors = listOf(
+                InnerError(
+                    field = "id",
+                    message = "Id must not be null or blank"
+                )
+            )
+        )
+
+        fun resultErrorConcurrent(lock: String, question: InnerQuestion?) = DbQuestionResponse(
+            data = question,
+            isSuccess = false,
+            errors = listOf(
+                errorRepoConcurrency(InnerVersionLock(lock), question?.lock?.let { InnerVersionLock(it.asString()) })
+            )
+        )
+
+        val resultErrorNotFound = DbQuestionResponse(
+            isSuccess = false,
+            data = null,
+            errors = listOf(
+                InnerError(
+                    field = "id",
+                    message = "Not Found",
+                    code = notFoundCode
+                )
+            )
+        )
+    }
 }

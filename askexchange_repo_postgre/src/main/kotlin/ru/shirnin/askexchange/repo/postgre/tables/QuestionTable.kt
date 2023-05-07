@@ -1,6 +1,7 @@
 package ru.shirnin.askexchange.repo.postgre.tables
 
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import ru.shirnin.askexchange.inner.models.InnerId
@@ -23,4 +24,13 @@ object QuestionTable : IdTable<String>("question") {
         parentUserId = InnerId(response[parentUserId].toString()),
         lock = InnerVersionLock(response[lock])
     )
+
+    fun from(response: ResultRow) = InnerQuestion(
+        id = InnerId(response[id].toString()),
+        title = response[title],
+        body = response[body],
+        parentUserId = InnerId(response[parentUserId].toString()),
+        lock = InnerVersionLock(response[lock])
+    )
+
 }
