@@ -59,7 +59,7 @@ class InnerQuestionProcessor {
                 validation {
                     worker("Copying request") { questionValidating = questionRequest.deepCopy() }
                     worker("Cleaning title") {
-                        questionValidating.id = InnerId(questionValidating.id.toString().trim())
+                        questionValidating.id = InnerId(questionValidating.id.asString().trim())
                     }
                     validateIdNotEmpty("Checking whether id is empty")
 
@@ -115,7 +115,7 @@ class InnerQuestionProcessor {
                 validation {
                     worker("Copying request") { questionValidating = questionRequest.deepCopy() }
                     worker("Cleaning title") {
-                        questionValidating.id = InnerId(questionValidating.id.toString().trim())
+                        questionValidating.id = InnerId(questionValidating.id.asString().trim())
                     }
                     validateIdNotEmpty("Checking whether id is empty")
                     validateLockNotEmpty("Check if lock isn't empty")

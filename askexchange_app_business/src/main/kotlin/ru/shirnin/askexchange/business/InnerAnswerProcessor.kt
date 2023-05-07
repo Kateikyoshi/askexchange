@@ -60,7 +60,7 @@ class InnerAnswerProcessor {
                 }
                 validation {
                     worker("Copying request") { answerValidating = answerRequest.deepCopy() }
-                    worker("Cleaning title") { answerValidating.id = InnerId(answerValidating.id.toString().trim()) }
+                    worker("Cleaning title") { answerValidating.id = InnerId(answerValidating.id.asString().trim()) }
                     validateIdNotEmpty("Checking whether id is empty")
 
                     finishAnswerValidation("Rounding up")
@@ -111,7 +111,7 @@ class InnerAnswerProcessor {
                 }
                 validation {
                     worker("Copying request") { answerValidating = answerRequest.deepCopy() }
-                    worker("Cleaning title") { answerValidating.id = InnerId(answerValidating.id.toString().trim()) }
+                    worker("Cleaning title") { answerValidating.id = InnerId(answerValidating.id.asString().trim()) }
                     validateIdNotEmpty("Checking whether id is empty")
                     validateLockNotEmpty("Check if lock isn't empty")
                     validateLockProperFormat("Checking lock format")

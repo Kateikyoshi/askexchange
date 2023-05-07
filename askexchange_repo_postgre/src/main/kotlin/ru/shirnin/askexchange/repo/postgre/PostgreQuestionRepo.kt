@@ -1,8 +1,10 @@
 package ru.shirnin.askexchange.repo.postgre
 
 import com.benasher44.uuid.uuid4
+import kotlinx.coroutines.selects.select
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.shirnin.askexchange.inner.models.InnerError
 import ru.shirnin.askexchange.inner.models.InnerId
@@ -84,13 +86,18 @@ class PostgreQuestionRepo(
 
     override suspend fun readQuestion(request: DbQuestionIdRequest): DbQuestionResponse {
         return safeTransaction({
-            val result =
-                (QuestionTable innerJoin UserTable).select { QuestionTable.id.eq(request.id.asString()) }.single()
+            println("before read: ${request.id.asString()}")
+            //StarWarsFilms.slice(StarWarsFilms.name.countDistinct())
+            val count = QuestionTable.slice(QuestionTable.id.countDistinct())
+            println("before read count: $count")
+//            val result =
+//                (QuestionTable innerJoin UserTable).select { QuestionTable.id eq request.id.asString() }.single()
+            val result = QuestionTable.select { QuestionTable.id eq request.id.asString() }.single()
 
             DbQuestionResponse(QuestionTable.from(result), true)
         }, {
             val error = when (this) {
-                is NoSuchElementException -> InnerError(field = "id", message = "Not Found", code = notFoundCode)
+                is NoSuchElementException -> InnerError(field = "id", message = "Not Found 6", code = notFoundCode)
                 is IllegalArgumentException -> InnerError(message = "More than one element with the same id")
                 else -> InnerError(message = localizedMessage)
             }
@@ -116,7 +123,7 @@ class PostgreQuestionRepo(
             DbQuestionResponse(
                 data = request.question,
                 isSuccess = false,
-                errors = listOf(InnerError(field = "id", message = "Not Found", code = notFoundCode))
+                errors = listOf(InnerError(field = "id", message = "Not Found 9", code = notFoundCode))
             )
 
         })
@@ -147,7 +154,7 @@ class PostgreQuestionRepo(
         val key = request.id.takeIf { it != InnerId.NONE }?.asString() ?: return resultErrorEmptyId
 
         return safeTransaction({
-            val local = QuestionTable.select {  QuestionTable.id eq key }.single().let { QuestionTable.from(it) }
+            val local = QuestionTable.select { QuestionTable.id eq key }.single().let { QuestionTable.from(it) }
             if (local.lock == request.lock) {
                 QuestionTable.deleteWhere { id eq request.id.asString() }
                 DbQuestionResponse(data = local, isSuccess = true)
@@ -158,7 +165,7 @@ class PostgreQuestionRepo(
             DbQuestionResponse(
                 data = null,
                 isSuccess = false,
-                errors = listOf(InnerError(field = "id", message = "Not Found"))
+                errors = listOf(InnerError(field = "id", message = "Not Found: ${this.message}"))
             )
         })
     }
@@ -174,7 +181,7 @@ class PostgreQuestionRepo(
     }
 
     companion object {
-        private const val notFoundCode = "not-found"
+        private const val notFoundCode = "not-found 000"
 
         val resultErrorEmptyId = DbQuestionResponse(
             data = null,
@@ -201,7 +208,7 @@ class PostgreQuestionRepo(
             errors = listOf(
                 InnerError(
                     field = "id",
-                    message = "Not Found",
+                    message = "Not Found kk",
                     code = notFoundCode
                 )
             )
