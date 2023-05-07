@@ -1,10 +1,8 @@
 import exceptions.UnknownInnerCmd
-import ru.shirnin.askexchange.inner.models.InnerCommand
-import ru.shirnin.askexchange.inner.models.InnerError
-import ru.shirnin.askexchange.inner.models.InnerState
 import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 import ru.shirnin.askexchange.api.v1.models.*
-import ru.shirnin.askexchange.inner.models.InnerQuestionContext
+import ru.shirnin.askexchange.inner.models.*
+import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 
 fun InnerQuestionContext.toTransport(): IQuestionResponse = when (val cmd = command) {
     InnerCommand.CREATE -> toTransportCreate()
@@ -46,10 +44,17 @@ fun InnerQuestionContext.toTransportRead() = QuestionReadResponse(
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    question = Question(),
+    question = questionResponse.toTransport(),
     answers = answersOfQuestionResponse.toTransport(),
     versionLock = questionResponse.lock.asString()
 )
+
+private fun InnerQuestion.toTransport(): Question {
+    return Question(
+        title = this.title,
+        body = this.body
+    )
+}
 
 private fun List<InnerAnswer>.toTransport() = this.
     map { it.toTransport() }
