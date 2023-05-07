@@ -1,0 +1,16 @@
+{
+  "debug": {
+    "mode": "prod",
+    "stub": "success"
+  },
+  "requestType": "update",
+  "debugId": "11",
+  "questionUpdateObject": {
+    "questionId": "1d728782-367f-44ce-bc79-3d9eb1b1eff7",
+    "question": {
+      "title": "title2",
+      "body": "body"
+    },
+    "versionLock": "04e45d5d-117e-459b-b38e-cdd50de8ab8d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "debug": {
+    "mode": "prod",
+    "stub": "success"
+  },
+  "requestType": "read",
+  "debugId": "11",
+  "answerReadObject": {
+    "answerId": "0650369e-1dda-4f04-bcbb-553ee0d54d1c"
+  }
+}

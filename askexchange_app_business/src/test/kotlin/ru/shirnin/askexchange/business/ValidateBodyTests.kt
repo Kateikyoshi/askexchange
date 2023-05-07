@@ -26,7 +26,7 @@ class ValidateBodyTests: FunSpec({
                     id = InnerId("111"),
                     title = "abc",
                     body = "",
-                    username = "Jack"
+                    parentUserId = InnerId("222")
                 ),
             )
             questionProcessor.exec(context)

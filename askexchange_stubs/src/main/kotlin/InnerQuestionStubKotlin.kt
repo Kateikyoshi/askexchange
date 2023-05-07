@@ -7,6 +7,6 @@ object InnerQuestionStubKotlin {
             id = InnerId("1"),
             title = "New language Kotlin",
             body = "I've heard Kotlin is some new JVM thingie. What is it about?",
-            username = "Josh"
+            parentUserId = InnerId("222")
         )
 }

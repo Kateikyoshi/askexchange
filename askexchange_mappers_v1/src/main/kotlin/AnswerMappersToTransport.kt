@@ -19,33 +19,37 @@ fun InnerAnswerContext.toTransport(): IAnswerResponse = when (val cmd = command)
 fun InnerAnswerContext.toTransportCreate() = AnswerCreateResponse(
     responseType = "CREATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    answerId = answerResponse.id.asString()
+    answerId = answerResponse.id.asString(),
+    versionLock = answerResponse.lock.asString()
 )
 
 fun InnerAnswerContext.toTransportDelete() = AnswerDeleteResponse(
     responseType = "DELETE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    answerId = answerResponse.id.asString()
+    answerId = answerResponse.id.asString(),
+    versionLock = answerResponse.lock.asString()
 )
 
 fun InnerAnswerContext.toTransportUpdate() = AnswerUpdateResponse(
     responseType = "UPDATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    answerId = answerResponse.id.asString()
+    answerId = answerResponse.id.asString(),
+    versionLock = answerResponse.lock.asString()
 )
 
 fun InnerAnswerContext.toTransportRead() = AnswerReadResponse(
     responseType = "READ",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    answer = answerResponse.toTransport()
+    answer = answerResponse.toTransport(),
+    versionLock = answerResponse.lock.asString()
 )
 
 fun InnerAnswer.toTransport() = Answer(

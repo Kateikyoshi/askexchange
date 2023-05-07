@@ -90,7 +90,7 @@ components:
           type: string
         body:
           type: string
-        username:
+        parentUserId:
           type: string
 
     AnswerLog:
@@ -104,6 +104,10 @@ components:
         date:
           type: string
         likes:
+          type: string
+        parentUserId:
+          type: string
+        parentQuestionId:
           type: string
 
     ErrorLogModel:

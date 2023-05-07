@@ -9,7 +9,7 @@ import ru.shirnin.askexchange.inner.models.helpers.fail
 
 fun MultipleCommandBuilder<InnerAnswerContext>.validateIdNotEmpty(title: String) = worker {
     this.title = title
-    isContextHealthy { answerValidating.id.asString().isNotBlank() }
+    isContextHealthy { answerValidating.id.asString().isBlank() }
     handle {
         fail(
             errorValidation(

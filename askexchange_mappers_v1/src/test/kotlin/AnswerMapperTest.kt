@@ -42,24 +42,18 @@ class AnswerMapperTest: FunSpec({
 
         val context = InnerAnswerContext(
             command = InnerCommand.CREATE,
-            state = InnerState.RUNNING,
+            state = InnerState.FINISHED,
             errors = mutableListOf(InnerError("1"), InnerError("2")),
             workMode = InnerWorkMode.PROD,
             stubCase = InnerStubs.SUCCESS,
             debugId = InnerDebugId(debugId),
 
-            user = InnerUser(
-                id = InnerId("555"),
-                login = "Christian",
-                password = "223",
-                email = "com@com",
-                expertise = "prowler"
-            ),
+
             question = InnerQuestion(
                 id = InnerId("666"),
                 title = "Where am I?",
                 body = "I think I'm lost",
-                username = "Boss"
+                parentUserId = InnerId("888")
             ),
             answerRequest = InnerAnswer(
                 id = InnerId("444"),

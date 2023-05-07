@@ -19,8 +19,8 @@ private fun IQuestionRequest.obtainDebugId(): InnerDebugId {
 
 
 private fun InnerQuestionContext.fromTransport(request: QuestionCreateRequest) {
-    command = ru.shirnin.askexchange.inner.models.InnerCommand.CREATE
-    questionRequest = request.toInnerWithUsername()
+    command = InnerCommand.CREATE
+    questionRequest = request.toInnerWithParentUserAndQuestionId()
 
     debugId = request.obtainDebugId()
     workMode = request.debug?.transportToWorkMode() ?: InnerWorkMode.PROD
@@ -29,7 +29,7 @@ private fun InnerQuestionContext.fromTransport(request: QuestionCreateRequest) {
 
 private fun InnerQuestionContext.fromTransport(request: QuestionDeleteRequest) {
     command = InnerCommand.DELETE
-    questionRequest = request.questionDeleteObject?.questionId?.toInnerOnlyById() ?: InnerQuestion()
+    questionRequest = request.toInnerWithId()
 
     debugId = request.obtainDebugId()
     workMode = request.debug?.transportToWorkMode() ?: InnerWorkMode.PROD
@@ -54,28 +54,34 @@ private fun InnerQuestionContext.fromTransport(request: QuestionReadRequest) {
     stubCase = request.debug?.transportToStubCase() ?: InnerStubs.NONE
 }
 
-private fun QuestionCreateRequest.toInnerWithUsername(): InnerQuestion {
+private fun QuestionCreateRequest.toInnerWithParentUserAndQuestionId(): InnerQuestion {
     val innerQuestion = this.questionCreateObject?.question?.toInner() ?: InnerQuestion()
-    innerQuestion.username = this.questionCreateObject?.username ?: ""
+    innerQuestion.parentUserId = this.questionCreateObject?.userId.formInnerId()
     return innerQuestion
 }
 
-private fun String.toInnerOnlyById() = InnerQuestion(id = this.formInnerId())
-private fun String.formInnerId() = InnerId(this)
+private fun String?.toInnerOnlyById() = InnerQuestion(id = this.formInnerId())
+private fun String?.formInnerId() = this?.let { InnerId(it) } ?: InnerId.NONE
+
+private fun String?.toInnerVersionLock() = this?.let { InnerVersionLock(it) }  ?: InnerVersionLock.NONE
 
 
 private fun QuestionUpdateRequest.toInnerWithId() = InnerQuestion(
     id = InnerId(this.questionUpdateObject?.questionId ?: ""),
     title = this.questionUpdateObject?.question?.title ?: "",
     body = this.questionUpdateObject?.question?.body ?: "",
-    username = ""
+    lock = this.questionUpdateObject?.versionLock.toInnerVersionLock()
+)
+
+private fun QuestionDeleteRequest.toInnerWithId() = InnerQuestion(
+    id = InnerId(this.questionDeleteObject?.questionId ?: ""),
+    lock = this.questionDeleteObject?.versionLock.toInnerVersionLock()
 )
 
 fun Question.toInner() = InnerQuestion(
     id = InnerId(""),
     title = this.title ?: "",
-    body = this.body ?: "",
-    username = ""
+    body = this.body ?: ""
 )
 
 
