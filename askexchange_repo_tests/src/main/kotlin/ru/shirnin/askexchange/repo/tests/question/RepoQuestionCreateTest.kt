@@ -15,7 +15,7 @@ fun createSuccess(repo: QuestionRepository) = funSpec {
         val createObject = InnerQuestion(
             title = "create object",
             body = "create object body",
-            username = "create object owner"
+            parentUserId = InnerId("create object parentUserId")
         )
 
         runRepoTest {
@@ -25,7 +25,7 @@ fun createSuccess(repo: QuestionRepository) = funSpec {
             resultQuestion.isSuccess shouldBe true
             resultQuestion.data?.title shouldBe expectedQuestion.title
             resultQuestion.data?.body shouldBe expectedQuestion.body
-            resultQuestion.data?.username shouldBe expectedQuestion.username
+            resultQuestion.data?.parentUserId shouldBe expectedQuestion.parentUserId
         }
     }
 }

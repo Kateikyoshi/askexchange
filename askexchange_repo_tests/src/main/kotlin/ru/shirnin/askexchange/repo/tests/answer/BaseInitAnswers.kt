@@ -18,6 +18,8 @@ abstract class BaseInitAnswers(private val operation: String): InitObjects<Inner
         body = "$suffix stub body",
         date = Instant.DISTANT_PAST,
         likes = 999,
-        lock = innerVersionLock
+        lock = innerVersionLock,
+        parentUserId = InnerId("$suffix stub parentUserId"),
+        parentQuestionId = InnerId("$suffix stub parentQuestionId")
     )
 }

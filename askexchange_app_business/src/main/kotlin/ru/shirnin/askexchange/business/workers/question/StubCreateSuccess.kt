@@ -15,7 +15,6 @@ fun MultipleCommandBuilder<InnerQuestionContext>.stubCreateSuccess(title: String
         state = InnerState.FINISHED
         val stub = InnerQuestionStub.prepareResult {
             questionRequest.title.takeIf { it.isNotBlank() }?.also { this.title = it }
-            questionRequest.username.takeIf { it.isNotBlank() }?.also { this.username = it }
             questionRequest.body.takeIf { it.isNotBlank() }?.also { this.body = it }
         }
         questionResponse = stub

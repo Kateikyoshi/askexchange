@@ -31,17 +31,31 @@ class PostgreQuestionRepo(
         }
     }
 
-    private fun save(item: InnerQuestion): DbQuestionResponse {
+    /**
+     * User is supposed to exist prior to Question creation.
+     * But he doesn't exist in this half-**** implementation, so he is fictionally inserted.
+     * Otherwise, Question table won't be able to reference that
+     * parentUserId and transaction will fail.
+     */
+    private fun save(question: InnerQuestion): DbQuestionResponse {
         return safeTransaction({
 
-            val response = QuestionTable.insert {
-                if (item.id != InnerId.NONE) {
-                    it[id] = item.id.asString()
+            //***atrocity part start
+            val insertedParentUserId = UserTable.insertIgnore {
+                if (question.parentUserId != InnerId.NONE) {
+                    it[id] = question.parentUserId.asString()
                 }
-                it[title] = item.title
-                it[body] = item.body
-                //it[user] = item.username
-                it[lock] = item.lock.asString()
+            } get UserTable.id
+            //***atrocity part end
+
+            val response = QuestionTable.insert {
+                if (question.id != InnerId.NONE) {
+                    it[id] = question.id.asString()
+                }
+                it[title] = question.title
+                it[body] = question.body
+                it[parentUserId] = insertedParentUserId
+                it[lock] = question.lock.asString()
             }
 
             DbQuestionResponse(QuestionTable.from(response), true)
@@ -57,23 +71,12 @@ class PostgreQuestionRepo(
     override suspend fun createQuestion(request: DbQuestionRequest): DbQuestionResponse {
         val question = request.question.copy(
             lock = InnerVersionLock(randomUuid()),
-            id = request.question.id.takeIf { it != InnerId.NONE } ?: InnerId(randomUuid())
+            id = request.question.id.takeIf { it != InnerId.NONE } ?: InnerId(
+                randomUuid()
+            )
         )
         return save(question)
     }
-
-    //override suspend fun createQuestion(request: DbQuestionRequest): DbQuestionResponse =
-    //        transaction {
-    //            val response = QuestionTable.insert {
-    //                it[id] = randomUuid()
-    //                it[title] = request.question.title
-    //                it[body] = request.question.body
-    //                //it[user] = request.question.username
-    //                it[lock] = randomUuid()
-    //            }
-    //
-    //            DbQuestionResponse(data = QuestionTable.from(response), isSuccess = true)
-    //        }
 
 
     override suspend fun readQuestion(request: DbQuestionIdRequest): DbQuestionResponse {

@@ -13,7 +13,6 @@ fun MultipleCommandBuilder<InnerQuestionContext>.repoPrepareUpdate(title: String
         questionRepoPrepare = questionFetchedFromRepo.deepCopy().apply {
             this.title = questionValidated.title
             body = questionValidated.body
-            username = questionValidated.username
         }
     }
 }

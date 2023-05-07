@@ -18,7 +18,6 @@ fun updateSuccess(repo: QuestionRepository) = funSpec {
                 id = updateSuccess.id,
                 title = updateSuccess.title,
                 body = updateSuccess.body,
-                username = updateSuccess.username,
                 lock = BaseUpdate.initObjects.first().lock
             )
         }
@@ -31,7 +30,6 @@ fun updateSuccess(repo: QuestionRepository) = funSpec {
             result.data?.id shouldBe reqUpdateSucc.id
             result.data?.body shouldBe reqUpdateSucc.body
             result.data?.title shouldBe reqUpdateSucc.title
-            result.data?.username shouldBe reqUpdateSucc.username
             result.errors shouldBe emptyList()
         }
     }

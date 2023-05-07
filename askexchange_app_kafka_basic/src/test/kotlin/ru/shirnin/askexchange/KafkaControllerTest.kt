@@ -40,7 +40,7 @@ class KafkaControllerTest : FunSpec({
             requestType = "CREATE",
             debugId = "1",
             questionCreateObject = QuestionCreateObject(
-                username = "Jill",
+                userId = "222",
                 question = Question(
                     title = "Biohazard",
                     body = "Where is Nemesis?"

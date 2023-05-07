@@ -38,7 +38,7 @@ class QuestionsTest : FunSpec({
                     requestType = "create",
                     debugId = "11",
                     questionCreateObject = QuestionCreateObject(
-                        username = "Paul",
+                        userId = "245",
                         question = Question(
                             title = "Kotlin is what?",
                             body = "I am not sure what to ask"

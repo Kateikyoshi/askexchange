@@ -16,7 +16,7 @@ abstract class BaseInitQuestions(private val operation: String): InitObjects<Inn
         id = InnerId("question-repo-$operation-$suffix"),
         title = "$suffix stub title",
         body = "$suffix stub body",
-        username = "$suffix stub username",
+        parentUserId = InnerId("$suffix stub parentUserId"),
         lock = innerVersionLock
     )
 }

@@ -10,6 +10,8 @@ data class AnswerEntity (
     val date: String? = null,
     val body: String? = null,
     val likes: String? = null,
+    val parentUserId: String? = null,
+    val parentQuestionId: String? = null,
     val lock: String? = null
 ) {
     constructor(innerAnswer: InnerAnswer): this(
@@ -17,6 +19,8 @@ data class AnswerEntity (
         date = innerAnswer.date.toString(),
         body = innerAnswer.body.takeIf { it.isNotBlank() },
         likes = innerAnswer.likes.toString(),
+        parentUserId = innerAnswer.parentUserId.asString().takeIf { it.isNotBlank() },
+        parentQuestionId = innerAnswer.parentQuestionId.asString().takeIf { it.isNotBlank() },
         lock = innerAnswer.lock.asString()
     )
 
@@ -25,6 +29,8 @@ data class AnswerEntity (
         date = date?.let { Instant.parse(it) } ?: Instant.DISTANT_PAST,
         body = body ?: "",
         likes = likes?.toLong() ?: 0,
+        parentUserId = parentUserId?.let { InnerId(it) } ?: InnerId.NONE,
+        parentQuestionId = parentQuestionId?.let { InnerId(it) } ?: InnerId.NONE,
         lock = lock?.let { InnerVersionLock(it) } ?: InnerVersionLock.NONE
     )
 }

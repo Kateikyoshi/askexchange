@@ -26,7 +26,7 @@ class ValidateIdTests: FunSpec({
                     id = InnerId(""),
                     title = "abc",
                     body = "abc",
-                    username = "Jack"
+                    parentUserId = InnerId("")
                 ),
             )
             questionProcessor.exec(context)
@@ -47,7 +47,8 @@ class ValidateIdTests: FunSpec({
                     id = InnerId(""),
                     date = Instant.DISTANT_PAST,
                     body = "111",
-                    likes = 1
+                    likes = 1,
+                    parentUserId = InnerId("")
                 ),
             )
             answerProcessor.exec(context)
