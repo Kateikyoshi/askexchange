@@ -377,6 +377,8 @@ components:
       properties:
         questionId:
           $ref: '#/components/schemas/QuestionId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to QuestionDeleteResponse==========================================
 
@@ -425,6 +427,8 @@ components:
           uniqueItems: true
           items:
             $ref: '#/components/schemas/Answer'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to AnswerCreateRequest==========================================
     IAnswerRequest:
@@ -552,6 +556,8 @@ components:
       properties:
         answerId:
           $ref: '#/components/schemas/AnswerId'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #This block is dedicated to AnswerDeleteResponse==========================================
     AnswerDeleteResponse:
@@ -592,6 +598,8 @@ components:
       properties:
         answer:
           $ref: '#/components/schemas/Answer'
+        versionLock:
+          $ref: '#/components/schemas/VersionLock'
 
     #Lock===================================================================================
     VersionLock:

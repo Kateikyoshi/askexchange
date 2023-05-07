@@ -19,7 +19,8 @@ fun InnerQuestionContext.toTransportCreate() = QuestionCreateResponse(
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    questionId = questionResponse.id.asString()
+    questionId = questionResponse.id.asString(),
+    versionLock = questionResponse.lock.asString()
 )
 
 fun InnerQuestionContext.toTransportDelete() = QuestionDeleteResponse(
@@ -27,7 +28,8 @@ fun InnerQuestionContext.toTransportDelete() = QuestionDeleteResponse(
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    questionId = questionResponse.id.asString()
+    questionId = questionResponse.id.asString(),
+    versionLock = questionResponse.lock.asString()
 )
 
 fun InnerQuestionContext.toTransportUpdate() = QuestionUpdateResponse(
@@ -35,7 +37,8 @@ fun InnerQuestionContext.toTransportUpdate() = QuestionUpdateResponse(
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
     result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    questionId = questionResponse.id.asString()
+    questionId = questionResponse.id.asString(),
+    versionLock = questionResponse.lock.asString()
 )
 
 fun InnerQuestionContext.toTransportRead() = QuestionReadResponse(
@@ -44,7 +47,8 @@ fun InnerQuestionContext.toTransportRead() = QuestionReadResponse(
     result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     question = Question(),
-    answers = answersOfQuestionResponse.toTransport()
+    answers = answersOfQuestionResponse.toTransport(),
+    versionLock = questionResponse.lock.asString()
 )
 
 private fun List<InnerAnswer>.toTransport() = this.
