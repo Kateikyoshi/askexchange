@@ -48,6 +48,8 @@ class PostgreAnswerRepo(
                     it[id] = answer.id.asString()
                 }
                 it[body] = answer.body
+                it[date] = answer.date.toString()
+                it[likes] = answer.likes.toInt()
                 it[parentUserId] = answer.parentUserId.asString()
                 it[parentQuestionId] = answer.parentQuestionId.asString()
                 it[lock] = answer.lock.asString()

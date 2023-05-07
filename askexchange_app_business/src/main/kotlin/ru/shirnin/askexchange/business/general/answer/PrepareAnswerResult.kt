@@ -9,7 +9,7 @@ import ru.shirnin.askexchange.inner.models.InnerWorkMode
 fun MultipleCommandBuilder<InnerAnswerContext>.prepareResult(title: String) = worker {
     this.title = title
     description = "Preparing data to be send back to client"
-    isContextHealthy { workMode != InnerWorkMode.STUB}
+    isContextHealthy { workMode != InnerWorkMode.STUB }
     handle {
         answerResponse = answerRepoDone
         state = when (val st = state) {

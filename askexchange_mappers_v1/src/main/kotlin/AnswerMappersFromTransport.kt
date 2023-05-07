@@ -78,7 +78,7 @@ private fun Answer.toInner() = InnerAnswer(
     id = InnerId(""),
     body = this.body ?: "",
     date = if (date != null) Instant.parse(date!!) else Instant.DISTANT_PAST,
-    likes = 0L
+    likes = this.likes?.toLong() ?: 0
 )
 private fun String?.toInnerQuestionOnlyById() = InnerQuestion(id = this.formInnerId())
 private fun String?.formInnerId() = this?.let { InnerId(it) } ?: InnerId.NONE

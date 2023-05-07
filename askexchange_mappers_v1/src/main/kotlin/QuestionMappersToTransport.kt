@@ -17,7 +17,7 @@ fun InnerQuestionContext.toTransport(): IQuestionResponse = when (val cmd = comm
 fun InnerQuestionContext.toTransportCreate() = QuestionCreateResponse(
     responseType = "CREATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     questionId = questionResponse.id.asString()
 )
@@ -25,7 +25,7 @@ fun InnerQuestionContext.toTransportCreate() = QuestionCreateResponse(
 fun InnerQuestionContext.toTransportDelete() = QuestionDeleteResponse(
     responseType = "DELETE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     questionId = questionResponse.id.asString()
 )
@@ -33,7 +33,7 @@ fun InnerQuestionContext.toTransportDelete() = QuestionDeleteResponse(
 fun InnerQuestionContext.toTransportUpdate() = QuestionUpdateResponse(
     responseType = "UPDATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     questionId = questionResponse.id.asString()
 )
@@ -41,7 +41,7 @@ fun InnerQuestionContext.toTransportUpdate() = QuestionUpdateResponse(
 fun InnerQuestionContext.toTransportRead() = QuestionReadResponse(
     responseType = "READ",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     question = Question(),
     answers = answersOfQuestionResponse.toTransport()
