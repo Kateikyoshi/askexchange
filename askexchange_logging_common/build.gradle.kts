@@ -35,6 +35,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
+    val datetimeVersion: String by project
+    api("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
