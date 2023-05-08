@@ -32,18 +32,19 @@ fun Application.module(appSettings: AskAppSettings = initAppSettings()) {
 }
 
 fun Application.initAppSettings(): AskAppSettings {
+    val sqlUrl = System.getenv("SQL_URL") ?: "jdbc:postgresql://localhost:5432/askexchange_postgre_db"
+    val props = SqlProperties(
+        url = sqlUrl
+    )
+
     val chainSettings = InnerChainSettings(
         loggerProvider = getLoggerProviderConf(),
         questionRepoTest = QuestionRepoInMemory(),
         questionRepoStub = QuestionRepoInMemory(),
-        questionRepoProd = PostgreQuestionRepo(
-            properties = SqlProperties()
-        ),
+        questionRepoProd = PostgreQuestionRepo(properties = props),
         answerRepoTest = AnswerRepoInMemory(),
         answerRepoStub = AnswerRepoInMemory(),
-        answerRepoProd = PostgreAnswerRepo(
-            properties = SqlProperties()
-        )
+        answerRepoProd = PostgreAnswerRepo(properties = props)
     )
 
     return AskAppSettings(
