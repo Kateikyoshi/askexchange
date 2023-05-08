@@ -18,6 +18,7 @@ fun updateSuccess(repo: QuestionRepository) = funSpec {
                 id = updateSuccess.id,
                 title = updateSuccess.title,
                 body = updateSuccess.body,
+                parentUserId = updateSuccess.parentUserId,
                 lock = BaseUpdate.initObjects.first().lock
             )
         }

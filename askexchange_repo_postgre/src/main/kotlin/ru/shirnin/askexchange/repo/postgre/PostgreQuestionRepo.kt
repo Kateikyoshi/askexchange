@@ -86,12 +86,6 @@ class PostgreQuestionRepo(
 
     override suspend fun readQuestion(request: DbQuestionIdRequest): DbQuestionResponse {
         return safeTransaction({
-            println("before read: ${request.id.asString()}")
-            //StarWarsFilms.slice(StarWarsFilms.name.countDistinct())
-            val count = QuestionTable.slice(QuestionTable.id.countDistinct())
-            println("before read count: $count")
-//            val result =
-//                (QuestionTable innerJoin UserTable).select { QuestionTable.id eq request.id.asString() }.single()
             val result = QuestionTable.select { QuestionTable.id eq request.id.asString() }.single()
 
             DbQuestionResponse(QuestionTable.from(result), true)
@@ -162,7 +156,7 @@ class PostgreQuestionRepo(
 
             if (extractedQuestion.lock == request.lock) {
                 val deletedAnswers = AnswerTable.deleteWhere { parentQuestionId eq request.id.asString() }
-                println("Deleted child answers number: $deletedAnswers")
+
                 QuestionTable.deleteWhere { id eq request.id.asString() }
                 DbQuestionResponse(data = extractedQuestion, isSuccess = true)
             } else {

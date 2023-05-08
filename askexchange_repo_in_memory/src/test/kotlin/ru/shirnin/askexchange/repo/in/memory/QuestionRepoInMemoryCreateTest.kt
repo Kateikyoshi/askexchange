@@ -5,6 +5,7 @@ import ru.shirnin.askexchange.repo.tests.question.BaseCreate
 import ru.shirnin.askexchange.repo.tests.question.createSuccess
 
 class QuestionRepoInMemoryCreateTest : FunSpec({
+
     include(
         createSuccess(
             QuestionRepoInMemory(

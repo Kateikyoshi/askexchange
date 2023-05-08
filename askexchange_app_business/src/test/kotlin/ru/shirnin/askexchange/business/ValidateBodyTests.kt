@@ -31,10 +31,6 @@ class ValidateBodyTests: FunSpec({
             )
             questionProcessor.exec(context)
 
-            context.errors.forEach {
-                println(it)
-            }
-
             context.errors.size shouldBe 1
             context.state shouldBe InnerState.FAILED
         }

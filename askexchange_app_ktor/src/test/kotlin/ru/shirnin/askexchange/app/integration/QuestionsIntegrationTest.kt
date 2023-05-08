@@ -43,7 +43,6 @@ class QuestionsIntegrationTest : FunSpec({
     }
 
     val exposedPort = postgresContainer.firstMappedPort
-    println("cunt port: $exposedPort")
 
     test("question create prod with test container") {
 
@@ -56,8 +55,6 @@ class QuestionsIntegrationTest : FunSpec({
                     )
                 )
             }
-
-            println("cunt port: ${postgresContainer.firstMappedPort}")
 
             val client = createClient {
                 install(ContentNegotiation) {
@@ -87,8 +84,6 @@ class QuestionsIntegrationTest : FunSpec({
                 setBody(requestObj)
             }
             val responseObj = response.body<QuestionCreateResponse>()
-
-            println("resp obj\n$responseObj")
 
             response.status.value shouldBe 200
             responseObj.questionId shouldNotBe ""

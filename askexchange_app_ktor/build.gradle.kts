@@ -68,7 +68,6 @@ tasks {
 
 dependencies {
     val ktorVersion: String by project
-    val kotlinVersion: String by project
     val logbackVersion: String by project
     val logbackMoreAppendersVersion: String by project
     val fluentLoggerVersion: String by project
@@ -120,16 +119,18 @@ dependencies {
     //tests
     val kotestVersion: String by project
     val mockkVersion: String by project
-    val postgresDriverVersion: String by project
+    val kotestTestContainersExtensionVersion: String by project
+    val testcontainersVersion: String by project
+
     testImplementation(project(":askexchange_repo_tests"))
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:1.3.4")
-    testImplementation("org.testcontainers:postgresql:1.18.0")
-    testImplementation("org.testcontainers:junit-jupiter:1.18.0")
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:$kotestTestContainersExtensionVersion")
+    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
 
 }
 

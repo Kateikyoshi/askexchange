@@ -11,7 +11,7 @@ dependencies {
     val exposedVersion: String by project
     val postgresDriverVersion: String by project
 
-    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("org.postgresql:postgresql:$postgresDriverVersion")
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
@@ -31,6 +31,15 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+
+    val kotestTestContainersExtensionVersion: String by project
+    val testcontainersVersion: String by project
+
+    testImplementation(project(":askexchange_repo_tests"))
+
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:$kotestTestContainersExtensionVersion")
+    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
 }
 
 tasks {

@@ -52,8 +52,6 @@ class AnswersTest : FunSpec({
             }
             val responseObj = response.body<AnswerCreateResponse>()
 
-            println(responseObj)
-
             response.status.value shouldBe 200
             responseObj.answerId shouldBe "999"
         }
@@ -95,8 +93,6 @@ class AnswersTest : FunSpec({
                 setBody(requestObj)
             }
             val responseObj = response.body<AnswerUpdateResponse>()
-
-            println(responseObj)
 
             response.status.value shouldBe 200
             responseObj.answerId shouldBe "999"
