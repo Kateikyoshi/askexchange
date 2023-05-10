@@ -35,16 +35,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
+    val datetimeVersion: String by project
+    api("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     //transport models
-    implementation(project(":askexchange_mappers_v1"))
-    implementation(project(":askexchange_api_v1"))
-    implementation(project(":askexchange_inner_models_v1"))
 
     //stubs
-    implementation(project(":askexchange_stubs"))
 
     //tests
     val kotestVersion: String by project

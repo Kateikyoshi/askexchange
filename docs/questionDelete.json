@@ -1,0 +1,12 @@
+{
+  "debug": {
+    "mode": "prod",
+    "stub": "success"
+  },
+  "requestType": "delete",
+  "debugId": "11",
+  "questionDeleteObject": {
+    "questionId": "c76e4129-7dab-4912-a3fb-7d22c8363700",
+    "versionLock": "de803f79-affc-4a7d-ab33-dba51ca82d61"
+  }
+}

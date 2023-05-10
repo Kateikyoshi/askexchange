@@ -12,7 +12,7 @@ class QuestionRequestSerializationTest: FunSpec({
         requestType = "CREATE",
         debugId = "1",
         questionCreateObject = QuestionCreateObject(
-            username = "Jill",
+            userId = "Jill",
             question = Question(
                 title = "Biohazard",
                 body = "Where is Nemesis?"
@@ -24,7 +24,7 @@ class QuestionRequestSerializationTest: FunSpec({
         val json = apiV1Mapper.writeValueAsString(request)
 
         json shouldContain """"title":\s?"Biohazard"""".trimIndent().toRegex()
-        json shouldContain """"username":\s?"Jill"""".trimIndent().toRegex()
+        json shouldContain """"userId":\s?"Jill"""".trimIndent().toRegex()
     }
 
     test("deserialize") {

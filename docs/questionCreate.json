@@ -1,0 +1,16 @@
+{
+  "debug": {
+    "mode": "prod",
+    "stub": "success"
+  },
+  "requestType": "create",
+  "debugId": "11",
+  "questionCreateObject": {
+    "userId": "20",
+    "question": {
+      "title": "title",
+      "body": "body"
+    }
+  }
+}
+

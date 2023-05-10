@@ -1,0 +1,17 @@
+{
+  "debug": {
+    "mode": "prod",
+    "stub": "success"
+  },
+  "requestType": "create",
+  "debugId": "11",
+  "answerCreateObject": {
+    "userId": "55",
+    "questionId": "deab167c-6203-4460-84dc-3e7b4f4e980a",
+    "answer": {
+      "body": "my answer body",
+      "date": "2007-12-03T10:15:30Z",
+      "likes": "0"
+    }
+  }
+}

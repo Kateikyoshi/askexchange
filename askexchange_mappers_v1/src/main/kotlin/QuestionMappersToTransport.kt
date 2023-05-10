@@ -1,10 +1,8 @@
 import exceptions.UnknownInnerCmd
-import ru.shirnin.askexchange.inner.models.InnerCommand
-import ru.shirnin.askexchange.inner.models.InnerError
-import ru.shirnin.askexchange.inner.models.InnerState
 import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 import ru.shirnin.askexchange.api.v1.models.*
-import ru.shirnin.askexchange.inner.models.InnerQuestionContext
+import ru.shirnin.askexchange.inner.models.*
+import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 
 fun InnerQuestionContext.toTransport(): IQuestionResponse = when (val cmd = command) {
     InnerCommand.CREATE -> toTransportCreate()
@@ -17,35 +15,46 @@ fun InnerQuestionContext.toTransport(): IQuestionResponse = when (val cmd = comm
 fun InnerQuestionContext.toTransportCreate() = QuestionCreateResponse(
     responseType = "CREATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    questionId = questionResponse.id.asString()
+    questionId = questionResponse.id.asString(),
+    versionLock = questionResponse.lock.asString()
 )
 
 fun InnerQuestionContext.toTransportDelete() = QuestionDeleteResponse(
     responseType = "DELETE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    questionId = questionResponse.id.asString()
+    questionId = questionResponse.id.asString(),
+    versionLock = questionResponse.lock.asString()
 )
 
 fun InnerQuestionContext.toTransportUpdate() = QuestionUpdateResponse(
     responseType = "UPDATE",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    questionId = questionResponse.id.asString()
+    questionId = questionResponse.id.asString(),
+    versionLock = questionResponse.lock.asString()
 )
 
 fun InnerQuestionContext.toTransportRead() = QuestionReadResponse(
     responseType = "READ",
     debugId = this.debugId.asString().takeIf { it.isNotBlank() },
-    result = if (state == InnerState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == InnerState.FINISHED) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    question = Question(),
-    answers = answersOfQuestionResponse.toTransport()
+    question = questionResponse.toTransport(),
+    answers = answersOfQuestionResponse.toTransport(),
+    versionLock = questionResponse.lock.asString()
 )
+
+private fun InnerQuestion.toTransport(): Question {
+    return Question(
+        title = this.title,
+        body = this.body
+    )
+}
 
 private fun List<InnerAnswer>.toTransport() = this.
     map { it.toTransport() }

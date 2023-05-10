@@ -26,14 +26,10 @@ class ValidateBodyTests: FunSpec({
                     id = InnerId("111"),
                     title = "abc",
                     body = "",
-                    username = "Jack"
+                    parentUserId = InnerId("222")
                 ),
             )
             questionProcessor.exec(context)
-
-            context.errors.forEach {
-                println(it)
-            }
 
             context.errors.size shouldBe 1
             context.state shouldBe InnerState.FAILED
