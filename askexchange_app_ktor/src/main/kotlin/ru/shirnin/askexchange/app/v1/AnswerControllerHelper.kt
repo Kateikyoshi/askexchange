@@ -2,11 +2,14 @@ package ru.shirnin.askexchange.app.v1
 
 import fromTransport
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import ru.shirnin.askexchange.api.v1.models.IAnswerRequest
 import ru.shirnin.askexchange.api.v1.models.IAnswerResponse
 import ru.shirnin.askexchange.app.AskAppSettings
+import ru.shirnin.askexchange.app.conf.toModel
 import ru.shirnin.askexchange.app.toLog
 import ru.shirnin.askexchange.inner.models.InnerAnswerContext
 import ru.shirnin.askexchange.inner.models.InnerCommand
@@ -28,6 +31,8 @@ suspend inline fun <reified Q : IAnswerRequest, @Suppress("unused") reified R : 
 
     try {
         log.doWithLogging(logId) {
+            context.principal = principal<JWTPrincipal>().toModel()
+
             val request = receive<Q>()
 
             context.fromTransport(request)

@@ -18,5 +18,6 @@ Made by using https://webflow.com/design
 3) [User demands](docs/3_UserDemands.md)
 4) [Marketplace state and rivals](docs/4_MarketState.md)
 5) [Postman examples](docs/5_Postman examples.md)
+6) [Authentication](docs/6_Authentication.md)
 
 

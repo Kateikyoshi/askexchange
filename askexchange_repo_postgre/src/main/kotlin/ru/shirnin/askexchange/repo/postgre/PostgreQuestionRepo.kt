@@ -1,10 +1,8 @@
 package ru.shirnin.askexchange.repo.postgre
 
 import com.benasher44.uuid.uuid4
-import kotlinx.coroutines.selects.select
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.shirnin.askexchange.inner.models.InnerError
 import ru.shirnin.askexchange.inner.models.InnerId
