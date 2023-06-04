@@ -9,6 +9,11 @@ services:
       - "8080"
     environment:
       SQL_URL: jdbc:postgresql://psql:5432/askexchange_postgre_db
+      jwt.secret: jwtsecret
+      jwt.issuer: AskExchangeKotlin
+      jwt.audience: askexch-users
+      jwt.clientId: asxexch
+      jwt.certUrl: askexch-service
     depends_on:
       psql:
         condition: service_healthy

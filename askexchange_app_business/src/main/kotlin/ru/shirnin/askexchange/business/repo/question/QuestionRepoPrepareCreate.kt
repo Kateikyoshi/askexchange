@@ -11,7 +11,7 @@ fun MultipleCommandBuilder<InnerQuestionContext>.repoPrepareCreate(title: String
     isContextHealthy { state == InnerState.RUNNING }
     handle {
         questionFetchedFromRepo = questionValidated.deepCopy()
+        questionFetchedFromRepo.parentUserId = principal.id
         questionRepoPrepare = questionFetchedFromRepo
-
     }
 }

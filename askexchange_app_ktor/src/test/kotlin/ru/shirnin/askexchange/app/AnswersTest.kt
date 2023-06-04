@@ -11,13 +11,15 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.shirnin.askexchange.api.v1.models.*
+import ru.shirnin.askexchange.app.conf.KtorAuthConfig
 
 class AnswersTest : FunSpec({
     test("answer create") {
         testApplication {
             application {
                 module(
-                    appSettings = initTestAppSettings()
+                    appSettings = initTestAppSettings(),
+                    authSettings = KtorAuthConfig.TEST
                 )
             }
             val client = createClient {
@@ -49,6 +51,7 @@ class AnswersTest : FunSpec({
                 )
                 contentType(ContentType.Application.Json)
                 setBody(requestObj)
+                addAuth()
             }
             val responseObj = response.body<AnswerCreateResponse>()
 
@@ -56,11 +59,12 @@ class AnswersTest : FunSpec({
             responseObj.answerId shouldBe "999"
         }
     }
-    test("question update") {
+    test("answer update") {
         testApplication {
             application {
                 module(
-                    appSettings = initTestAppSettings()
+                    appSettings = initTestAppSettings(),
+                    authSettings = KtorAuthConfig.TEST
                 )
             }
             val client = createClient {
@@ -91,6 +95,7 @@ class AnswersTest : FunSpec({
                 )
                 contentType(ContentType.Application.Json)
                 setBody(requestObj)
+                addAuth()
             }
             val responseObj = response.body<AnswerUpdateResponse>()
 

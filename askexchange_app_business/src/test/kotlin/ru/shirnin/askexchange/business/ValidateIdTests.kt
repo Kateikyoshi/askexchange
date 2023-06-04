@@ -8,6 +8,8 @@ import kotlinx.datetime.Instant
 import ru.shirnin.askexchange.inner.models.*
 import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 import ru.shirnin.askexchange.inner.models.question.InnerQuestion
+import ru.shirnin.askexchange.repo.`in`.memory.AnswerRepoInMemory
+import ru.shirnin.askexchange.repo.`in`.memory.QuestionRepoInMemory
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ValidateIdTests: FunSpec({
@@ -18,7 +20,12 @@ class ValidateIdTests: FunSpec({
     test("validating empty question id") {
         runTest {
 
+            val repo = QuestionRepoInMemory()
+
             val context = InnerQuestionContext(
+                settings = InnerChainSettings(
+                    questionRepoTest = repo
+                ),
                 command = command,
                 state = InnerState.NONE,
                 workMode = InnerWorkMode.TEST,
@@ -38,8 +45,12 @@ class ValidateIdTests: FunSpec({
 
     test("validating empty answer id") {
         runTest {
+            val repo = AnswerRepoInMemory()
 
             val context = InnerAnswerContext(
+                settings = InnerChainSettings(
+                    answerRepoTest = repo
+                ),
                 command = command,
                 state = InnerState.NONE,
                 workMode = InnerWorkMode.TEST,

@@ -16,6 +16,7 @@ import io.ktor.server.testing.*
 import org.testcontainers.containers.PostgreSQLContainer
 import ru.shirnin.askexchange.api.v1.models.*
 import ru.shirnin.askexchange.app.*
+import ru.shirnin.askexchange.app.conf.KtorAuthConfig
 
 
 class QuestionsIntegrationTest : FunSpec({
@@ -52,7 +53,8 @@ class QuestionsIntegrationTest : FunSpec({
                 module(
                     appSettings = initIntegrationTestAppSettings(
                         dbUrl = "jdbc:postgresql://localhost:$exposedPort/askexchange"
-                    )
+                    ),
+                    authSettings = KtorAuthConfig.TEST
                 )
             }
 
@@ -82,11 +84,12 @@ class QuestionsIntegrationTest : FunSpec({
                 )
                 contentType(ContentType.Application.Json)
                 setBody(requestObj)
+                addAuth()
             }
             val responseObj = response.body<QuestionCreateResponse>()
 
             response.status.value shouldBe 200
-            responseObj.questionId shouldNotBe ""
+            responseObj.questionId.isNullOrBlank() shouldNotBe true
         }
     }
 })

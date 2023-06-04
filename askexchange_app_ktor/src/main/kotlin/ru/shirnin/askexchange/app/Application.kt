@@ -3,6 +3,7 @@ package ru.shirnin.askexchange.app
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import ru.shirnin.askexchange.app.conf.KtorAuthConfig
 import ru.shirnin.askexchange.app.plugins.*
 import ru.shirnin.askexchange.business.InnerAnswerProcessor
 import ru.shirnin.askexchange.business.InnerQuestionProcessor
@@ -17,17 +18,21 @@ import ru.shirnin.askexchange.repo.postgre.SqlProperties
 import ru.shirnin.askexchange.repo.stubs.AnswerRepositoryStub
 import ru.shirnin.askexchange.repo.stubs.QuestionRepositoryStub
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}
+//fun main() {
+//    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+//        .start(wait = true)
+//}
+fun main(args: Array<String>) = EngineMain.main(args)
 
-fun Application.module(appSettings: AskAppSettings = initAppSettings()) {
+fun Application.module(
+    appSettings: AskAppSettings = initAppSettings(),
+    authSettings: KtorAuthConfig = KtorAuthConfig(environment)
+) {
     configureSerialization()
     configureHTTP(appSettings)
     configureMonitoring(appSettings)
     configureSockets()
-    //configureSecurity()
+    configureSecurity(appSettings, authSettings)
     configureRouting(appSettings)
 }
 
@@ -39,9 +44,14 @@ fun Application.initAppSettings(): AskAppSettings {
 
     val chainSettings = InnerChainSettings(
         loggerProvider = getLoggerProviderConf(),
+
         questionRepoTest = QuestionRepoInMemory(),
         questionRepoStub = QuestionRepoInMemory(),
         questionRepoProd = PostgreQuestionRepo(properties = props),
+        //questionRepoTest = getQuestionDatabaseConf(InnerDbType.TEST),
+        //questionRepoStub = getQuestionDatabaseConf(InnerDbType.TEST),
+        //questionRepoProd = getQuestionDatabaseConf(InnerDbType.PROD),
+
         answerRepoTest = AnswerRepoInMemory(),
         answerRepoStub = AnswerRepoInMemory(),
         answerRepoProd = PostgreAnswerRepo(properties = props)

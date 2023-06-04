@@ -3,6 +3,8 @@ package ru.shirnin.askexchange.inner.models
 import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.inner.models.stubs.InnerStubs
+import ru.shirnin.askexchange.inner.permissions.InnerPrincipalModel
+import ru.shirnin.askexchange.inner.permissions.InnerUserPermissions
 import ru.shirnin.askexchange.repo.question.QuestionRepository
 
 data class InnerQuestionContext (
@@ -14,6 +16,10 @@ data class InnerQuestionContext (
     var stubCase: InnerStubs = InnerStubs.NONE,
     var debugId: InnerDebugId = InnerDebugId.NONE,
     var settings: InnerChainSettings = InnerChainSettings.NONE,
+
+    var principal: InnerPrincipalModel = InnerPrincipalModel.NONE,
+    val permissionsChain: MutableSet<InnerUserPermissions> = mutableSetOf(),
+    var permitted: Boolean = false,
 
     var questionRepo: QuestionRepository = QuestionRepository.NONE,
     var questionFetchedFromRepo: InnerQuestion = InnerQuestion(),

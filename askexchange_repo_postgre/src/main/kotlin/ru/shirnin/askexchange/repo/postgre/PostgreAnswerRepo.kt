@@ -9,7 +9,6 @@ import ru.shirnin.askexchange.inner.models.InnerId
 import ru.shirnin.askexchange.inner.models.InnerVersionLock
 import ru.shirnin.askexchange.inner.models.answer.InnerAnswer
 import ru.shirnin.askexchange.inner.models.helpers.errorRepoConcurrency
-import ru.shirnin.askexchange.inner.models.question.InnerQuestion
 import ru.shirnin.askexchange.repo.answer.AnswerRepository
 import ru.shirnin.askexchange.repo.answer.DbAnswerIdRequest
 import ru.shirnin.askexchange.repo.answer.DbAnswerRequest
@@ -17,7 +16,6 @@ import ru.shirnin.askexchange.repo.answer.DbAnswerResponse
 import ru.shirnin.askexchange.repo.postgre.tables.AnswerTable
 import ru.shirnin.askexchange.repo.postgre.tables.QuestionTable
 import ru.shirnin.askexchange.repo.postgre.tables.UserTable
-import ru.shirnin.askexchange.repo.question.DbQuestionResponse
 import java.lang.IllegalArgumentException
 //import ru.shirnin.askexchange.repo.postgre.tables.UserTable
 import java.sql.SQLException

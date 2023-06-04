@@ -3,24 +3,35 @@ package ru.shirnin.askexchange.app.plugins
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.application.*
+import ru.shirnin.askexchange.app.AskAppSettings
+import ru.shirnin.askexchange.app.conf.KtorAuthConfig
+import ru.shirnin.askexchange.app.conf.KtorAuthConfig.Companion.GROUPS_CLAIM
+import ru.shirnin.askexchange.app.conf.resolveAlgorithm
 
-fun Application.configureSecurity() {
-    
+fun Application.configureSecurity(appSettings: AskAppSettings, authSettings: KtorAuthConfig) {
+    val loggerSecurity = appSettings.chainSettings.loggerProvider.logger(Application::configureSecurity::class)
+
     authentication {
-            jwt {
-                val jwtAudience = this@configureSecurity.environment.config.property("jwt.audience").getString()
-                realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
-                verifier(
+            jwt("auth-jwt") {
+                realm = authSettings.realm
+
+                verifier { httpAuthHeader ->
+                    val algorithm = httpAuthHeader.resolveAlgorithm(authSettings)
                     JWT
-                        .require(Algorithm.HMAC256("secret"))
-                        .withAudience(jwtAudience)
-                        .withIssuer(this@configureSecurity.environment.config.property("jwt.domain").getString())
+                        .require(algorithm)
+                        .withAudience(authSettings.audience)
+                        .withIssuer(authSettings.issuer)
                         .build()
-                )
+                }
                 validate { credential ->
-                    if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+                    when {
+                        credential.payload.getClaim(GROUPS_CLAIM).asList(String::class.java).isNullOrEmpty() -> {
+                            loggerSecurity.error("Groups claim must not be empty in JWT token")
+                            null
+                        }
+                        else -> JWTPrincipal(credential.payload)
+                    }
                 }
             }
         }

@@ -29,13 +29,6 @@ ktor {
         jreVersion.set(JreVersion.valueOf("JRE_$javaVersion"))
         localImageName.set(project.name)
         imageTag.set(project.version.toString())
-//        portMappings.set(listOf(
-//            io.ktor.plugin.features.DockerPortMapping(
-//                80,
-//                8080,
-//                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
-//            )
-//        ))
     }
 }
 
@@ -45,25 +38,6 @@ tasks {
     test {
         useJUnitPlatform()
     }
-
-//    val dockerJvmDockerfile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class) {
-//        group = "docker"
-//        from("bellsoft/liberica-openjdk-alpine:17")
-//        copyFile("ktor.jar", "app/ktor.jar")
-//        exposePort(8080)
-//        entryPoint("java", "-Xms256m", "-Xmx512m", "-jar", "app/ktor.jar")
-//    }
-//    create("dockerBuildJvmImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class) {
-//        group = "docker"
-//        dependsOn(dockerJvmDockerfile, named("build"))
-//        doFirst {
-//            copy {
-//                from("${project.buildDir}/libs/askexchange_app_ktor-0.0.1.jar")
-//                into("${project.buildDir}/docker/ktor.jar")
-//            }
-//        }
-//        images.add("${project.name}:${project.version}")
-//    }
 }
 
 dependencies {
@@ -92,6 +66,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-config-yaml-jvm:$ktorVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("com.sndyuk:logback-more-appenders:$logbackMoreAppendersVersion")

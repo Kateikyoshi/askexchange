@@ -5,6 +5,9 @@ import ru.shirnin.askexchange.inner.models.InnerQuestionContext
 import ru.shirnin.askexchange.inner.models.InnerCommand
 import ru.shirnin.askexchange.business.models.question.operation
 import ru.shirnin.askexchange.business.models.question.stubs
+import ru.shirnin.askexchange.business.permissions.question.accessValidation
+import ru.shirnin.askexchange.business.permissions.question.chainPermissions
+import ru.shirnin.askexchange.business.permissions.question.frontPermissions
 import ru.shirnin.askexchange.business.repo.question.initRepo
 import ru.shirnin.askexchange.business.repo.question.*
 import ru.shirnin.askexchange.business.validation.question.*
@@ -41,11 +44,14 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Persistence logic"
                     repoPrepareCreate("Preparing object for saving")
+                    accessValidation("Resolving access permissions")
                     repoCreate("Creating a Question in a DB")
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
 
@@ -65,15 +71,18 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Reading logic"
                     repoRead("Reading Question from DB")
+                    accessValidation("Resolving access permissions")
                     worker {
                         title = "Preparing answer for Read"
                         isContextHealthy { state == InnerState.RUNNING }
                         handle { questionRepoDone = questionFetchedFromRepo }
                     }
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
 
@@ -96,12 +105,15 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Update logic"
                     repoRead("Reading Question from DB")
+                    accessValidation("Resolving access permissions")
                     repoPrepareUpdate("Preparing object for an Update")
                     repoUpdate("Updating object in DB")
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
 
@@ -123,12 +135,15 @@ class InnerQuestionProcessor {
 
                     finishQuestionValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Deletion logic"
                     repoRead("Reading Question from DB")
+                    accessValidation("Resolving access permissions")
                     repoPrepareDelete("Preparing object for Delete")
                     repoDelete("Deleting object from DB")
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
         }.build()

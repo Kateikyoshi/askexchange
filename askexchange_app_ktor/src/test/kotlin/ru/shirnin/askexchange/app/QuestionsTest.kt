@@ -11,13 +11,38 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.shirnin.askexchange.api.v1.models.*
+import ru.shirnin.askexchange.app.conf.KtorAuthConfig
 
+
+/**
+ * Here is how to generate damnable JWT token:
+ *
+ * https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhc2tleGNoLXVzZXJzIiwiaXNzIjoiQXNrRXhjaGFuZ2VLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwic3ViIjoidXNlcjEifQ.gWsMS1KbX9jB37r3JaKH2mXbydJveSiuvCFD5HKmKHo
+ *
+ * header: {
+ *   "alg": "HS256",
+ *   "typ": "JWT"
+ * }
+ * payload: {
+ *   "aud": "askexch-users",
+ *   "iss": "AskExchangeKotlin",
+ *   "groups": [
+ *     "USER",
+ *     "TEST"
+ *   ],
+ *   "sub": "user1"
+ * }
+ * signature: secret1 (don't encode in base64!)
+ *
+ * Set header "Authorization Bearer <token>" in Postman
+ */
 class QuestionsTest : FunSpec({
     test("question create") {
         testApplication {
             application {
                 module(
-                    appSettings = initTestAppSettings()
+                    appSettings = initTestAppSettings(),
+                    authSettings = KtorAuthConfig.TEST
                 )
             }
             val client = createClient {
@@ -47,6 +72,9 @@ class QuestionsTest : FunSpec({
                 )
                 contentType(ContentType.Application.Json)
                 setBody(requestObj)
+                //checking out how manually generated token works
+                bearerAuth("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhc2tleGNoLXVzZXJzIiwiaXNzIjoiQXNrRXhjaGFuZ2VLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwic3ViIjoidXNlcjEifQ.gWsMS1KbX9jB37r3JaKH2mXbydJveSiuvCFD5HKmKHo")
+                //addAuth()
             }
             val responseObj = response.body<QuestionCreateResponse>()
 
@@ -58,7 +86,8 @@ class QuestionsTest : FunSpec({
         testApplication {
             application {
                 module(
-                    appSettings = initTestAppSettings()
+                    appSettings = initTestAppSettings(),
+                    authSettings = KtorAuthConfig.TEST
                 )
             }
             val client = createClient {
@@ -88,6 +117,7 @@ class QuestionsTest : FunSpec({
                 )
                 contentType(ContentType.Application.Json)
                 setBody(requestObj)
+                addAuth()
             }
             val responseObj = response.body<QuestionUpdateResponse>()
 

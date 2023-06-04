@@ -3,6 +3,9 @@ package ru.shirnin.askexchange.business
 import ru.shirnin.askexchange.business.general.answer.prepareResult
 import ru.shirnin.askexchange.business.models.answer.operation
 import ru.shirnin.askexchange.business.models.answer.stubs
+import ru.shirnin.askexchange.business.permissions.answer.accessValidation
+import ru.shirnin.askexchange.business.permissions.answer.chainPermissions
+import ru.shirnin.askexchange.business.permissions.answer.frontPermissions
 import ru.shirnin.askexchange.business.repo.answer.initRepo
 import ru.shirnin.askexchange.business.repo.answer.repoCreate
 import ru.shirnin.askexchange.business.repo.answer.repoPrepareCreate
@@ -43,11 +46,14 @@ class InnerAnswerProcessor {
 
                     finishAnswerValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Persistence logic"
                     repoPrepareCreate("Preparing object for saving")
+                    accessValidation("Resolving access permissions")
                     repoCreate("Creating a Answer in a DB")
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
 
@@ -65,15 +71,18 @@ class InnerAnswerProcessor {
 
                     finishAnswerValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Reading logic"
                     repoRead("Reading Answer from DB")
+                    accessValidation("Resolving access permissions")
                     worker {
                         title = "Preparing answer for Read"
                         isContextHealthy { state == InnerState.RUNNING }
                         handle { answerRepoDone = answerFetchedFromRepo }
                     }
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
 
@@ -93,12 +102,15 @@ class InnerAnswerProcessor {
 
                     finishAnswerValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Update logic"
                     repoRead("Reading Answer from DB")
+                    accessValidation("Resolving access permissions")
                     repoPrepareUpdate("Preparing object for an Update")
                     repoUpdate("Updating object in DB")
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
 
@@ -118,12 +130,15 @@ class InnerAnswerProcessor {
 
                     finishAnswerValidation("Rounding up")
                 }
+                chainPermissions("Setting up user permissions")
                 chain {
                     title = "Deletion logic"
                     repoRead("Reading Answer from DB")
+                    accessValidation("Resolving access permissions")
                     repoPrepareDelete("Preparing object for Delete")
                     repoDelete("Deleting object from DB")
                 }
+                frontPermissions("Resolving permissions for frontend")
                 prepareResult("Preparing a reply")
             }
         }.build()

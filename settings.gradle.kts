@@ -27,6 +27,8 @@ include("askexchange_common")
 include("askexchange_app_ktor")
 include("askexchange_stubs")
 include("askexchange_app_kafka_basic")
+include("askexchange_auth")
+
 include("askexchange_logging_common")
 include("askexchange_logging_logback")
 
