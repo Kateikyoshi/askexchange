@@ -1,0 +1,12 @@
+#Keycloak v2 endpoints:
+### Check out realm 'askexch' for endpoints
+GET http://localhost:8081/realms/askexch/.well-known/openid-configuration
+
+### Get token by using url encoded creds
+POST http://localhost:8081/realms/askexch/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=hateful-client&
+grant_type=password&
+username=dragon&
+password=shiva

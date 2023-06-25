@@ -7,19 +7,23 @@ services:
       - "8080:8080"
     expose:
       - "8080"
+    #When building an image, pay attention to issuer and certUrl in application.yml, since env variables
+    #won't overwrite them. Also pay attention to the issuer, it is checked as a string
+    #so it won't work when set as "keycloak"
     environment:
       SQL_URL: jdbc:postgresql://psql:5432/askexchange_postgre_db
-      jwt.secret: jwtsecret
-      jwt.issuer: AskExchangeKotlin
-      jwt.audience: askexch-users
-      jwt.clientId: asxexch
-      jwt.certUrl: askexch-service
+      jwt.issuer: http://127.0.0.1:8180/realms/askexch
+      jwt.audience: account
+      jwt.realm: askexch
+      jwt.clientId: hateful-client
+      jwt.certUrl: http://keycloak:8180/realms/askexch/protocol/openid-connect/certs
     depends_on:
       psql:
         condition: service_healthy
       fluent-bit:
         condition: service_started
-
+    networks:
+      - opensearch-net
   psql:
     image: postgres:15.2-alpine
     container_name: askexchange_postgre
@@ -39,7 +43,39 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      #  nginx:
+    networks:
+      - opensearch-net
+
+#https://hub.docker.com/r/jboss/keycloak/
+  keycloak:
+    #image: quay.io/keycloak/keycloak:21.1.1
+    build:
+      dockerfile: ./configs/keycloak/Dockerfile
+    container_name: dagger
+    command:
+      #- import --file=/tmp/askexch-realm.json
+      #- ./mkdir /opt/keycloak/data/import
+      #- cp /tmp/askexch-realm.json /opt/keycloak/data/import
+      - start-dev --http-port=8180 --import-realm
+    ports:
+      - "8180:8180"
+      - "8082:9990"
+    expose:
+      - "8081"
+      - "8180"
+    volumes:
+      - ./configs/keycloak:/tmp
+    environment:
+      KEYCLOAK_ADMIN: ifrit
+      KEYCLOAK_ADMIN_PASSWORD: shiva
+    networks:
+      - opensearch-net
+      #configured "askexch" realm containing "hateful-client" client with mapped group claim and "dragon" user with "shiva" password
+      #clients-> clients list-> hateful-client-> client scopes-> hateful-client dedicated-> groups mapper custom field
+      #KEYCLOAK_IMPORT: "/tmp/askexch-realm2.json"
+
+
+#  nginx:
 #    image: nginx:latest
 #    ports:
 #      - "8080:80"

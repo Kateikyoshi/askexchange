@@ -8,6 +8,10 @@ ktor:
     - "http://127.0.0.1:8080/"
     - "http://0.0.0.0:8080/"
     - "http://192.168.0.182:8080/"
+    - "http://askexchange:8080/"
+    - "http://psql:8080/"
+    - "http://keycloak:8080/"
+    - "http://fluent-bit:8080/"
   watch:
     - classes
     - resources
@@ -22,9 +26,16 @@ repository:
     url: "jdbc:postgresql://psql:5432/askexchange"
     schema: askexchange
 
+#When building an image, pay attention to issuer and certUrl in application.yml, since env variables
+#won't overwrite them. Also pay attention to the issuer, it is checked as a string
+#so it won't work when set as "keycloak"
 jwt:
-  secret: "secret1"
-  issuer: "AskExchangeKotlin"
-  audience: "askexch-users"
-  realm: "asxexch"
-  clientId: "askexch-service"
+  #secret: "secret1"
+  issuer: "http://127.0.0.1:8180/realms/askexch"
+  #issuer: "AskExchangeKotlin"
+  audience: "account"
+  #audience: "askexch-users"
+  realm: "askexch"
+  clientId: "hateful-client"
+  #clientId: "askexch-service"
+  certUrl: "http://127.0.0.1:8180/realms/askexch/protocol/openid-connect/certs"
