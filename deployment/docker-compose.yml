@@ -12,11 +12,12 @@ services:
     #so it won't work when set as "keycloak"
     environment:
       SQL_URL: jdbc:postgresql://psql:5432/askexchange_postgre_db
-      jwt.issuer: http://127.0.0.1:8180/realms/askexch
+      JWT_ISSUER: http://keycloak:8180/realms/askexch
       jwt.audience: account
       jwt.realm: askexch
       jwt.clientId: hateful-client
-      jwt.certUrl: http://keycloak:8180/realms/askexch/protocol/openid-connect/certs
+      JWT_CERT_URL: http://keycloak:8180/realms/askexch/protocol/openid-connect/certs
+      LOGS_FB_HOSTS: fluent-bit
     depends_on:
       psql:
         condition: service_healthy
@@ -56,7 +57,7 @@ services:
       #- import --file=/tmp/askexch-realm.json
       #- ./mkdir /opt/keycloak/data/import
       #- cp /tmp/askexch-realm.json /opt/keycloak/data/import
-      - start-dev --http-port=8180 --import-realm
+      - start-dev --http-port=8180 --hostname-url=http://keycloak:8180 --hostname-strict-backchannel=true --import-realm
     ports:
       - "8180:8180"
       - "8082:9990"

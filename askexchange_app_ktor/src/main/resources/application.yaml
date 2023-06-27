@@ -31,11 +31,11 @@ repository:
 #so it won't work when set as "keycloak"
 jwt:
   #secret: "secret1"
-  issuer: "http://127.0.0.1:8180/realms/askexch"
+  issuer: "$JWT_ISSUER:http://127.0.0.1:8180/realms/askexch"
   #issuer: "AskExchangeKotlin"
   audience: "account"
   #audience: "askexch-users"
   realm: "askexch"
   clientId: "hateful-client"
   #clientId: "askexch-service"
-  certUrl: "http://127.0.0.1:8180/realms/askexch/protocol/openid-connect/certs"
+  certUrl: "$JWT_CERT_URL:http://127.0.0.1:8180/realms/askexch/protocol/openid-connect/certs"
